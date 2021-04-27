@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="baidu-site-verification" content="093lY4ziMu" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="description" content="Done is better than perfect">
+    <meta name="keyword"  content="zhihao, brand new blog">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <!-- This is the logo of your website -->
+    <!-- Place this tag in your head or just before your close body tag -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <!--<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>-->
+    <title>
+        
+          macOS开启HiDPI外接2K显示器（解决字体发虚问题） - Zhihao&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://ningmoon.github.io/2020/05/20/Mac200520-macOS开启HiDPI外接2K显示器/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS --> 
+    
+        
+<link rel="stylesheet" href="/css/dusign-light.css">
+
+        
+<link rel="stylesheet" href="/css/dusign-common-light.css">
+
+        
+<link rel="stylesheet" href="/css/font-awesome.css">
+
+        
+<link rel="stylesheet" href="/css/toc.css">
+
+        <!-- background effects end -->
+    
+    
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    
+<link rel="stylesheet" href="/css/widget.css">
+
+
+    
+<link rel="stylesheet" href="/css/rocket.css">
+
+
+    
+<link rel="stylesheet" href="/css/signature.css">
+
+
+    
+<link rel="stylesheet" href="/css/fonts.googleapis.css">
+
+
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <!-- photography -->
+    
+<link rel="stylesheet" href="/css/photography.css">
+
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- background effects start -->
+    
+    <!-- background effects end -->
+
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            
+                background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('mac-bg.png')
+                /*post*/
+            
+        
+    }
+    
+    #signature{
+        background-image: url('/img/signature/zhihao.png');
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#HiDPI" title="HiDPI">HiDPI</a>
+                            
+                        </div>
+                        <h1>macOS开启HiDPI外接2K显示器（解决字体发虚问题）</h1>
+                        <h2 class="subheading">macOS turns on HiDPI external 2K display</h2>
+                        <span class="meta">
+                            Posted by Zhihao on
+                            2020-05-20
+                        </span>
+
+                        
+
+                    </div>
+                
+
+                </div>
+            </div>
+        </div>      
+    </div>
+
+    
+    <div class="waveWrapper">
+        <div class="wave wave_before" style="background-image: url('/img/wave-light.png')"></div>
+        <div class="wave wave_after" style="background-image: url('/img/wave-light.png')"></div>
+    </div>
+    
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Zhihao&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Blog</a>
+                        <!-- 这是原代码<a href="/">Home</a> -->
+                    </li>
+
+                    
+
+                        
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/categories/">Categories</a>
+                        </li>
+                        
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/goals/">Bucket List</a>
+                        </li>
+                        
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                        
+                    
+                    
+                    
+                    <li>
+                        <a href="http://www.yaozhihao.com/" target="_blank">Home</a>
+                        <!-- 这是原代码<a href="http://www.yaozhihao.com/" target="_blank">Chinese Blog</a> -->
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p><img src="Mac200520 macOS开启HiDPI外接2K显示器/200424-1.jpg" alt="The First Title Picture"></p>
+<a id="more"></a>
+<h1 id="1-前言："><a href="#1-前言：" class="headerlink" title="1.前言："></a>1.前言：</h1><p>入手了一台2K显示器，但是直接连HDMI线显示的效果不忍直视，所以我们需要开启苹果系统的hidpi模式来实现完美显示。<br>至于为什么要开启hidpi模式？2k显示器的分辨率是2560*1440，如果采用默认的设置，那么在显示器上面的字会特别的小。我尝试了用最新版的SwitchResX来强制打开1080P的分辨率，但是实际的效果并不好，虽然大小适配了，但是字体发虚，在查阅了不少资料之后，总结了这篇文章中最简单的实现HiDPI的方法。希望这篇文章可以帮到你。</p>
+<h1 id="2-解决办法："><a href="#2-解决办法：" class="headerlink" title="2.解决办法："></a>2.解决办法：</h1><h1 id="2-1-打开系统HiDPI-终端运行）"><a href="#2-1-打开系统HiDPI-终端运行）" class="headerlink" title="2.1 打开系统HiDPI (终端运行）"></a>2.1 打开系统HiDPI (终端运行）</h1><p><code>sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool YES</code><br>如果使用 4K 或更高分辨率的显示器，macOS 基本上原生支持 HiDPI，直接下载从RDM即可。如无法启用或没有合适的分辨率，再使用配置文件。</p>
+<h1 id="2-2-禁用SIP-macOS-10-11及以上"><a href="#2-2-禁用SIP-macOS-10-11及以上" class="headerlink" title="2.2 禁用SIP (macOS 10.11及以上)"></a>2.2 禁用SIP (macOS 10.11及以上)</h1><p>macOS 10.11 El Capitan 开始默认启用 System Integrity Protection (SIP) 防止系统文件被修改。因为配置文件需要放在系统文件夹中，要禁用 SIP。</p>
+<p>开机或重启时，在听到开机的那个声音之后按住<code>Command + R</code> 组合键，进入 macOS 恢复模式，在屏幕上方的菜单中选择 <code>Utlities &gt; Terminal</code> 打开终端，输入并执行：<br><code>csrutil disable</code><br>然后重启系统。进行下一步。</p>
+<p><strong>在全部设置完以后，建议安全起见还是重新启用 SIP，按照以上步骤进入恢复模式，输入并执行 <code>csrutil enable</code> </strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在这里插一句，最开始我做完这一步就直接去用SwitchResX的设置方法设置了强制打开1080P的分辨率，但是效果很不好，虽然适配了显示的大小，但是所有的显示都发飘，于是就有了以下的设置方法。</span><br></pre></td></tr></table></figure>
+<h1 id="2-3-获得显示器信息"><a href="#2-3-获得显示器信息" class="headerlink" title="2.3 获得显示器信息"></a>2.3 获得显示器信息</h1><p>获得显示器信息有很多种方法，在这里用最简单的，我们分别需要获得显示器的 VendorID 和 ProductID （制造商ID 和 产品ID），在终端运行：<br><code>ioreg -lw0 | grep IODisplayPrefsKey | grep -o &#39;/[^/]\+&quot;$&#39;</code><br>输出大概是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; ioreg -lw0 | grep IODisplayPrefsKey | grep -o &#39;&#x2F;[^&#x2F;]\+&quot;$&#39;</span><br><span class="line">&#x2F;AppleBacklightDisplay-610-a029&quot;</span><br><span class="line">&#x2F;AppleDisplay-10ac-d0ff&quot;</span><br></pre></td></tr></table></figure><br>第一条AppleBacklightDisplay-610-a029是MBP的内置显示屏。<br>第二条是外接显示器。如果你合上屏幕，这样只会输出正在使用的外接显示器。<br>着重在第二条，<code>/AppleDisplay-10ac-d0ff&quot;</code> 这里的<code>10ac</code>和<code>d0ff</code>是两个十六进制数。第一个为VendorID，第二个为ProductID。电脑不同，显示的数值不同，这里的数值是我的电脑为例。</p>
+<h1 id="2-4-生成配置文件夹"><a href="#2-4-生成配置文件夹" class="headerlink" title="2.4 生成配置文件夹"></a>2.4 生成配置文件夹</h1><h1 id="2-4-1-简单方法"><a href="#2-4-1-简单方法" class="headerlink" title="2.4.1 简单方法"></a>2.4.1 简单方法</h1><p>①生成配置文件<br>这一步的配置如果自己输入比较复杂，建议直接采用一键生成的方式进行配置，参考大神的<a href="https://wacky.one/blog/macos-hi-dpi/#copy-conf" target="_blank" rel="noopener">制作</a>。<br>具体按下图设置，分辨率你直接按下图填入即可，两个ID需要根据你的实际情况进行填写。<br><img src="Mac200520 macOS开启HiDPI外接2K显示器/200520-1.png" alt=""><br>点击生成之后就已经生成了配置文件了。<br>②创建配置文件夹<br>这一步简单，直接创建一个空白文件夹，重命名<code>DisplayVendorID-xxx</code>这里的<code>xxx</code>就是你上一步的VendorID。<br>③将①中的配置文件复制到②中的文件夹中<br>④将③中的文件夹拷贝到以下路径的文件夹中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># OS X 10.11及以上</span><br><span class="line">DIR&#x3D;&#x2F;System&#x2F;Library&#x2F;Displays&#x2F;Contents&#x2F;Resources&#x2F;Overrides</span><br><span class="line"># OS X 10.10及以下</span><br><span class="line">DIR&#x3D;&#x2F;System&#x2F;Library&#x2F;Displays&#x2F;Overrides</span><br></pre></td></tr></table></figure><br>到这里为止，准备工作就基本完成了。<br>如果这里的一键生成配置ok的话，直接跳到2.5即可。<br>如果这里的一键生成配置失效的话，就只能用2.4.2的复杂方法进行手动配置。</p>
+<h1 id="2-4-2-复杂方法"><a href="#2-4-2-复杂方法" class="headerlink" title="2.4.2 复杂方法"></a>2.4.2 复杂方法</h1><p>其实也不复杂，按照如下图所示，直接建立一个空白文档，将代码复制进去即可。<br><img src="Mac200520 macOS开启HiDPI外接2K显示器/200520-3.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;!DOCTYPE plist PUBLIC &quot;-&#x2F;&#x2F;Apple&#x2F;&#x2F;DTD PLIST 1.0&#x2F;&#x2F;EN&quot; &quot;http:&#x2F;&#x2F;www.apple.com&#x2F;DTDs&#x2F;PropertyList-1.0.dtd&quot;&gt;</span><br><span class="line">&lt;plist version&#x3D;&quot;1.0&quot;&gt;</span><br><span class="line">&lt;dict&gt;</span><br><span class="line">    &lt;key&gt;DisplayVendorID&lt;&#x2F;key&gt;</span><br><span class="line">    &lt;integer&gt;xxxx&lt;&#x2F;integer&gt;           </span><br><span class="line">    &lt;key&gt;DisplayProductID&lt;&#x2F;key&gt;</span><br><span class="line">    &lt;integer&gt;xxxx&lt;&#x2F;integer&gt;           </span><br><span class="line">    &lt;key&gt;scale-resolutions&lt;&#x2F;key&gt;</span><br><span class="line">    &lt;array&gt;</span><br><span class="line">        &lt;data&gt;AAAHgAAABDgAAAABACAAAA&#x3D;&#x3D;&lt;&#x2F;data&gt;    &lt;!-- 1920x1080 --&gt;</span><br><span class="line">        &lt;data&gt;AAAPAAAACHAAAAABACAAAA&#x3D;&#x3D;&lt;&#x2F;data&gt;</span><br><span class="line">        &lt;data&gt;AAAPAAAACHAAAAABACAAAA&#x3D;&#x3D;&lt;&#x2F;data&gt;    &lt;!-- 3840x2160 --&gt;</span><br><span class="line">        &lt;data&gt;AAAeAAAAEOAAAAABACAAAA&#x3D;&#x3D;&lt;&#x2F;data&gt;</span><br><span class="line">    &lt;&#x2F;array&gt;</span><br><span class="line">&lt;&#x2F;dict&gt;</span><br><span class="line">&lt;&#x2F;plist&gt;</span><br></pre></td></tr></table></figure><br>文件配置完成之后就按照2.4.1中的②③④操作即可。</p>
+<h1 id="2-5-使用RDM进行切换"><a href="#2-5-使用RDM进行切换" class="headerlink" title="2.5 使用RDM进行切换"></a>2.5 使用RDM进行切换</h1><p>重启系统打开RDM，这就可以进行切换了。<br>如图：<br><img src="Mac200520 macOS开启HiDPI外接2K显示器/200520-2.png" style="zoom: 50%;" /></p>
+<h1 id="3-最后总结"><a href="#3-最后总结" class="headerlink" title="3 最后总结"></a>3 最后总结</h1><p>这个方法是我自己尝试过不仅能够调节分辨率，而且也不会出现字体发飘的现象，而且应该是比较安全的一个方法。</p>
+
+                
+                <hr>
+                <!-- Pager -->
+                <!-- Here is the place to change the preview?????no  -->
+                <ul class="pager">
+
+                    
+
+                    
+                    <li class="next">
+                        <a href="/2020/04/24/Mac200424-Office2019安装冲突解决方法-ErrorCode-30182-392/" data-toggle="tooltip" data-placement="top" title="Office2019安装冲突解决方法 ErrorCode 30182-392">Next Post &rarr;</a>
+                    </li>
+                    
+
+                </ul>
+
+                <!-- tip start -->
+                
+
+                
+                <!-- tip end -->
+
+                <!-- Music start-->
+                
+                
+
+<link rel="stylesheet" href="/css/music-player/fonts/iconfont.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/reset.css">
+
+
+<link rel="stylesheet" href="/css/music-player/css/player.css">
+
+
+
+<div class="music-player">
+    <audio class="music-player__audio" ></audio>
+    <div class="music-player__main">
+        <div class="music-player__blur"></div>
+        <div class="music-player__disc">
+            <div class="music-player__image">
+                <img width="100%" src="" alt="">
+            </div>
+            <div class="music-player__pointer"><img width="100%" src="/img/cd_tou.png" alt=""></div>
+        </div>
+        <div class="music-player__controls">
+            <div class="music__info">
+                <h3 class="music__info--title">...</h3>
+                <p class="music__info--singer">...</p>
+            </div>
+            <div class="player-control">
+                <div class="player-control__content">
+                    <div class="player-control__btns">
+                        <div class="player-control__btn player-control__btn--prev"><i class="iconfont icon-prev"></i></div>
+                        <div class="player-control__btn player-control__btn--play"><i class="iconfont icon-play"></i></div>
+                        <div class="player-control__btn player-control__btn--next"><i class="iconfont icon-next"></i></div>
+                        <div class="player-control__btn player-control__btn--mode"><i class="iconfont icon-loop"></i></div>
+                    </div>
+                    <div class="player-control__volume">
+                        <div class="control__volume--icon player-control__btn"><i class="iconfont icon-volume"></i></div>
+                        <div class="control__volume--progress player_progress"></div>
+                    </div>
+                </div>
+                <div class="player-control__content">
+                    <div class="player__song--progress player_progress"></div>
+                    <div class="player__song--timeProgess nowTime">00:00</div>
+                    <div class="player__song--timeProgess totalTime">00:00</div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script src="/js/music-player/utill.js"></script>
+
+
+<script src="/js/music-player/jquery.min.js"></script>
+
+
+<script src="/js/music-player/player.js"></script>
+
+
+                
+                <!-- Music end -->
+
+                <!-- Sharing -->
+                
+                <!-- Sharing -->
+
+                <!-- gitment start -->
+                
+                <!-- gitment end -->
+
+                <!-- 来必力City版安装代码 -->
+                
+                <!-- City版安装代码已完成 -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#1-前言："><span class="toc-nav-text">1.前言：</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-解决办法："><span class="toc-nav-text">2.解决办法：</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-1-打开系统HiDPI-终端运行）"><span class="toc-nav-text">2.1 打开系统HiDPI (终端运行）</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-2-禁用SIP-macOS-10-11及以上"><span class="toc-nav-text">2.2 禁用SIP (macOS 10.11及以上)</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-3-获得显示器信息"><span class="toc-nav-text">2.3 获得显示器信息</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-4-生成配置文件夹"><span class="toc-nav-text">2.4 生成配置文件夹</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-4-1-简单方法"><span class="toc-nav-text">2.4.1 简单方法</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-4-2-复杂方法"><span class="toc-nav-text">2.4.2 复杂方法</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-5-使用RDM进行切换"><span class="toc-nav-text">2.5 使用RDM进行切换</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#3-最后总结"><span class="toc-nav-text">3 最后总结</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#HiDPI" title="HiDPI">HiDPI</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>LINKS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="#" target="_blank">Zhihao&#39;s Blog</a></li>
+                    
+                        <li><a href="#" target="_blank">HomePage</a></li>
+                    
+                        <li><a href="#" target="_blank">Other</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'ℬ'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+
+
+<style  type="text/css">
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<!-- 主页底部在这里修改 -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    &copy; 2017-2020 YaoZhihao
+                    <!-- 原代码 Copyright &copy; Zhihao 2021 -->
+                    <br>
+                    Theme by Snail <i class="fa fa-heart" aria-hidden="true"></i> Ported by <a href="https://yaozhihao.com" target="_blank" rel="noopener"> YaoZhihao </a>
+                    <!-- Powered by Hexo | Theme by <a href="https://yaozhihao.com" target="_blank" rel="noopener"> Nail </a> -->
+                    <!-- Note: to improve web accessibility, we recommend using aria-hidden="true" to hide icons used purely for decoration. -->
+                    <!-- 原代码 去掉竖线及后面的GitHub引用数量 以下注释内部为原代码-->
+                    <!-- <iframe style="margin-left: 2px; margin-bottom:-5px;" frameborder="0" scrolling="0" -->
+                    <!-- width="100px" height="20px" -->
+                    <!-- src="https://ghbtns.com/github-btn.html?user=dusign&repo=hexo-theme-snail&type=star&count=true"> -->
+                    <!-- </iframe> -->    
+                    
+                </p>
+            </div>
+        </div>
+    </div>
+
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- Search -->
+
+<script src="/js/search.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://ningmoon.github.io/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Search -->
+
+    <script type="text/javascript">      
+        var search_path = "search.xml";
+        if (search_path.length == 0) {
+            search_path = "search.xml";
+        }
+    var path = "/" + search_path;
+    searchFunc(path, 'local-search-input', 'local-search-result');
+    </script>
+
+
+<!-- busuanzi -->
+<!-- hide 20200310 -->
+<!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+
+    
+        <!-- background effects line -->
+        
+
+        
+
+        <!-- background effects end -->
+    
+
+    <!--<script size="50" alpha='0.3' zIndex="-999" src="/js/ribbonStatic.js"></script>-->
+    
+        <script src="/js/ribbonDynamic.js"></script>
+    
+</body>
+
+</html>
