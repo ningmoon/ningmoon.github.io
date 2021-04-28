@@ -258,7 +258,7 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p><img src="Mac180822 配置你的Sublime Text/mac-0003.png" alt="The First Title Picture" title="Optional Title"><br><strong>本文介绍在Mac上配置Sublime Text</strong><br><a id="more"></a></p>
+                <p><img src="/2018/08/22/Mac180822-%E9%85%8D%E7%BD%AE%E4%BD%A0%E7%9A%84Sublime-Text/mac-0003.png" alt="The First Title Picture" title="Optional Title"><br><strong>本文介绍在Mac上配置Sublime Text</strong><br><a id="more"></a></p>
 <h1 id="1-下载Sublime-Text"><a href="#1-下载Sublime-Text" class="headerlink" title="1 下载Sublime Text"></a>1 下载Sublime Text</h1><p>去官网下载Sublime Text<a href="https://www.sublimetext.com/3" target="_blank" rel="noopener">官网</a></p>
 <h1 id="2-注册"><a href="#2-注册" class="headerlink" title="2 注册"></a>2 注册</h1><p>输入注册码：</p>
 <p>注册码可以在搜索引擎直接搜索，搜最近的结果就行。</p>
@@ -267,11 +267,11 @@
 <h1 id="3-安装插件Package-Control"><a href="#3-安装插件Package-Control" class="headerlink" title="3 安装插件Package Control"></a>3 安装插件Package Control</h1><p>这个工具可以来安装后面需要的所有插件。打开已经安装好的 Sublime Text 3，然后点击顶部菜单的 View -&gt; Show Console（或者使用快捷键 command + ` ）。</p>
 <p>在下面的输入框里复制下面的代码</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import urllib.request,os,hashlib; h &#x3D; &#39;2915d1851351e5ee549c20394736b442&#39; + &#39;8bc59f460fa1548d1514676163dafc88&#39;; pf &#x3D; &#39;Package Control.sublime-package&#39;; ipp &#x3D; sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by &#x3D; urllib.request.urlopen( &#39;http:&#x2F;&#x2F;packagecontrol.io&#x2F;&#39; + pf.replace(&#39; &#39;, &#39;%20&#39;)).read(); dh &#x3D; hashlib.sha256(by).hexdigest(); print(&#39;Error validating download (got %s instead of %s), please try manual install&#39; % (dh, h)) if dh !&#x3D; h else open(os.path.join( ipp, pf), &#39;wb&#39; ).write(by)</span><br></pre></td></tr></table></figure>
-<p>如下图：<br><img src="Mac180822 配置你的Sublime Text/mac-0016.png" alt="1" title="Optional Title"><br>紧接着，查看是否已经安装成功<br><img src="Mac180822 配置你的Sublime Text/mac-0017.png" alt="1" title="Optional Title"><br>接下来是插件安装</p>
+<p>如下图：<br><img src="/2018/08/22/Mac180822-%E9%85%8D%E7%BD%AE%E4%BD%A0%E7%9A%84Sublime-Text/mac-0016.png" alt="1" title="Optional Title"><br>紧接着，查看是否已经安装成功<br><img src="/2018/08/22/Mac180822-%E9%85%8D%E7%BD%AE%E4%BD%A0%E7%9A%84Sublime-Text/mac-0017.png" alt="1" title="Optional Title"><br>接下来是插件安装</p>
 <p>通过快捷键<code>Command + Shift + P</code>  打开 <code>Package Control</code> 来安装插件。在打开的输入框中输入 <code>install</code>，会根据输入状态自动提示，用鼠标点击或键盘回车选择 Install Package 进入查找安装界面：</p>
-<p>等待几秒钟后，在新弹出的输入框里，输入你想要安装的插件名称：<br><img src="Mac180822 配置你的Sublime Text/mac-0018.png" alt="1" title="Optional Title"><br>用鼠标点击或键盘回车选择后，等待一段时间即可安装成功。所有的插件都存放在下面这个文件目录里，每个插件都有独立的文件夹：</p>
+<p>等待几秒钟后，在新弹出的输入框里，输入你想要安装的插件名称：<br><img src="/2018/08/22/Mac180822-%E9%85%8D%E7%BD%AE%E4%BD%A0%E7%9A%84Sublime-Text/mac-0018.png" alt="1" title="Optional Title"><br>用鼠标点击或键盘回车选择后，等待一段时间即可安装成功。所有的插件都存放在下面这个文件目录里，每个插件都有独立的文件夹：</p>
 <p><code>/Users/你的Username/Library/Application Support/Sublime Text 3/Packages</code></p>
-<p>等待几秒钟后，在新弹出的输入框里，输入你想要安装的插件名称：<br><img src="Mac180822 配置你的Sublime Text/mac-0019.png" alt="1" title="Optional Title"><br>这个根据你的需要下载相应的插件</p>
+<p>等待几秒钟后，在新弹出的输入框里，输入你想要安装的插件名称：<br><img src="/2018/08/22/Mac180822-%E9%85%8D%E7%BD%AE%E4%BD%A0%E7%9A%84Sublime-Text/mac-0019.png" alt="1" title="Optional Title"><br>这个根据你的需要下载相应的插件</p>
 <h1 id="4-用命令行打开Sublime"><a href="#4-用命令行打开Sublime" class="headerlink" title="4 用命令行打开Sublime"></a>4 用命令行打开Sublime</h1><p>到上一步已经把Sublime基本配置好了，但是如果经常用命令行的话还不能直接用命令行打开Sublime，所以需要进行这一步</p>
 <p>在你的终端文件里，加上：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alias subl&#x3D;\&#39;&#39;&#x2F;Applications&#x2F;Sublime Text 2.app&#x2F;Contents&#x2F;SharedSupport&#x2F;bin&#x2F;subl&#39;\&#39;</span><br></pre></td></tr></table></figure><br>一般终端文件就是 ~/.bashrc 或者是 ~/.bash_profile<br>如果是Sublime Text 3 的用户，可以把路径中的 /Sublime Text 2.app/ 改成 /Sublime Text.app/ 就可以了。</p>
 
