@@ -1,0 +1,766 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>macOS开启HiDPI外接2K显示器（解决字体发虚问题）</title>
+      <link href="2020/05/20/Mac200520-macOS%E5%BC%80%E5%90%AFHiDPI%E5%A4%96%E6%8E%A52K%E6%98%BE%E7%A4%BA%E5%99%A8/"/>
+      <url>2020/05/20/Mac200520-macOS%E5%BC%80%E5%90%AFHiDPI%E5%A4%96%E6%8E%A52K%E6%98%BE%E7%A4%BA%E5%99%A8/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2020/05/20/Mac200520-macOS%E5%BC%80%E5%90%AFHiDPI%E5%A4%96%E6%8E%A52K%E6%98%BE%E7%A4%BA%E5%99%A8/200424-1.jpg" alt="The First Title Picture"></p><a id="more"></a><h1 id="1-前言："><a href="#1-前言：" class="headerlink" title="1.前言："></a>1.前言：</h1><p>入手了一台2K显示器，但是直接连HDMI线显示的效果不忍直视，所以我们需要开启苹果系统的hidpi模式来实现完美显示。<br>至于为什么要开启hidpi模式？2k显示器的分辨率是2560*1440，如果采用默认的设置，那么在显示器上面的字会特别的小。我尝试了用最新版的SwitchResX来强制打开1080P的分辨率，但是实际的效果并不好，虽然大小适配了，但是字体发虚，在查阅了不少资料之后，总结了这篇文章中最简单的实现HiDPI的方法。希望这篇文章可以帮到你。</p><h1 id="2-解决办法："><a href="#2-解决办法：" class="headerlink" title="2.解决办法："></a>2.解决办法：</h1><h1 id="2-1-打开系统HiDPI-终端运行）"><a href="#2-1-打开系统HiDPI-终端运行）" class="headerlink" title="2.1 打开系统HiDPI (终端运行）"></a>2.1 打开系统HiDPI (终端运行）</h1><p><code>sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool YES</code><br>如果使用 4K 或更高分辨率的显示器，macOS 基本上原生支持 HiDPI，直接下载从RDM即可。如无法启用或没有合适的分辨率，再使用配置文件。</p><h1 id="2-2-禁用SIP-macOS-10-11及以上"><a href="#2-2-禁用SIP-macOS-10-11及以上" class="headerlink" title="2.2 禁用SIP (macOS 10.11及以上)"></a>2.2 禁用SIP (macOS 10.11及以上)</h1><p>macOS 10.11 El Capitan 开始默认启用 System Integrity Protection (SIP) 防止系统文件被修改。因为配置文件需要放在系统文件夹中，要禁用 SIP。</p><p>开机或重启时，在听到开机的那个声音之后按住<code>Command + R</code> 组合键，进入 macOS 恢复模式，在屏幕上方的菜单中选择 <code>Utlities &gt; Terminal</code> 打开终端，输入并执行：<br><code>csrutil disable</code><br>然后重启系统。进行下一步。</p><p><strong>在全部设置完以后，建议安全起见还是重新启用 SIP，按照以上步骤进入恢复模式，输入并执行 <code>csrutil enable</code> </strong></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在这里插一句，最开始我做完这一步就直接去用SwitchResX的设置方法设置了强制打开1080P的分辨率，但是效果很不好，虽然适配了显示的大小，但是所有的显示都发飘，于是就有了以下的设置方法。</span><br></pre></td></tr></table></figure><h1 id="2-3-获得显示器信息"><a href="#2-3-获得显示器信息" class="headerlink" title="2.3 获得显示器信息"></a>2.3 获得显示器信息</h1><p>获得显示器信息有很多种方法，在这里用最简单的，我们分别需要获得显示器的 VendorID 和 ProductID （制造商ID 和 产品ID），在终端运行：<br><code>ioreg -lw0 | grep IODisplayPrefsKey | grep -o &#39;/[^/]\+&quot;$&#39;</code><br>输出大概是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; ioreg -lw0 | grep IODisplayPrefsKey | grep -o &#39;&#x2F;[^&#x2F;]\+&quot;$&#39;</span><br><span class="line">&#x2F;AppleBacklightDisplay-610-a029&quot;</span><br><span class="line">&#x2F;AppleDisplay-10ac-d0ff&quot;</span><br></pre></td></tr></table></figure><br>第一条AppleBacklightDisplay-610-a029是MBP的内置显示屏。<br>第二条是外接显示器。如果你合上屏幕，这样只会输出正在使用的外接显示器。<br>着重在第二条，<code>/AppleDisplay-10ac-d0ff&quot;</code> 这里的<code>10ac</code>和<code>d0ff</code>是两个十六进制数。第一个为VendorID，第二个为ProductID。电脑不同，显示的数值不同，这里的数值是我的电脑为例。</p><h1 id="2-4-生成配置文件夹"><a href="#2-4-生成配置文件夹" class="headerlink" title="2.4 生成配置文件夹"></a>2.4 生成配置文件夹</h1><h1 id="2-4-1-简单方法"><a href="#2-4-1-简单方法" class="headerlink" title="2.4.1 简单方法"></a>2.4.1 简单方法</h1><p>①生成配置文件<br>这一步的配置如果自己输入比较复杂，建议直接采用一键生成的方式进行配置，参考大神的<a href="https://wacky.one/blog/macos-hi-dpi/#copy-conf" target="_blank" rel="noopener">制作</a>。<br>具体按下图设置，分辨率你直接按下图填入即可，两个ID需要根据你的实际情况进行填写。<br><img src="/2020/05/20/Mac200520-macOS%E5%BC%80%E5%90%AFHiDPI%E5%A4%96%E6%8E%A52K%E6%98%BE%E7%A4%BA%E5%99%A8/200520-1.png" alt><br>点击生成之后就已经生成了配置文件了。<br>②创建配置文件夹<br>这一步简单，直接创建一个空白文件夹，重命名<code>DisplayVendorID-xxx</code>这里的<code>xxx</code>就是你上一步的VendorID。<br>③将①中的配置文件复制到②中的文件夹中<br>④将③中的文件夹拷贝到以下路径的文件夹中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># OS X 10.11及以上</span><br><span class="line">DIR&#x3D;&#x2F;System&#x2F;Library&#x2F;Displays&#x2F;Contents&#x2F;Resources&#x2F;Overrides</span><br><span class="line"># OS X 10.10及以下</span><br><span class="line">DIR&#x3D;&#x2F;System&#x2F;Library&#x2F;Displays&#x2F;Overrides</span><br></pre></td></tr></table></figure><br>到这里为止，准备工作就基本完成了。<br>如果这里的一键生成配置ok的话，直接跳到2.5即可。<br>如果这里的一键生成配置失效的话，就只能用2.4.2的复杂方法进行手动配置。</p><h1 id="2-4-2-复杂方法"><a href="#2-4-2-复杂方法" class="headerlink" title="2.4.2 复杂方法"></a>2.4.2 复杂方法</h1><p>其实也不复杂，按照如下图所示，直接建立一个空白文档，将代码复制进去即可。<br><img src="/2020/05/20/Mac200520-macOS%E5%BC%80%E5%90%AFHiDPI%E5%A4%96%E6%8E%A52K%E6%98%BE%E7%A4%BA%E5%99%A8/200520-3.png" alt><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;!DOCTYPE plist PUBLIC &quot;-&#x2F;&#x2F;Apple&#x2F;&#x2F;DTD PLIST 1.0&#x2F;&#x2F;EN&quot; &quot;http:&#x2F;&#x2F;www.apple.com&#x2F;DTDs&#x2F;PropertyList-1.0.dtd&quot;&gt;</span><br><span class="line">&lt;plist version&#x3D;&quot;1.0&quot;&gt;</span><br><span class="line">&lt;dict&gt;</span><br><span class="line">    &lt;key&gt;DisplayVendorID&lt;&#x2F;key&gt;</span><br><span class="line">    &lt;integer&gt;xxxx&lt;&#x2F;integer&gt;           </span><br><span class="line">    &lt;key&gt;DisplayProductID&lt;&#x2F;key&gt;</span><br><span class="line">    &lt;integer&gt;xxxx&lt;&#x2F;integer&gt;           </span><br><span class="line">    &lt;key&gt;scale-resolutions&lt;&#x2F;key&gt;</span><br><span class="line">    &lt;array&gt;</span><br><span class="line">        &lt;data&gt;AAAHgAAABDgAAAABACAAAA&#x3D;&#x3D;&lt;&#x2F;data&gt;    &lt;!-- 1920x1080 --&gt;</span><br><span class="line">        &lt;data&gt;AAAPAAAACHAAAAABACAAAA&#x3D;&#x3D;&lt;&#x2F;data&gt;</span><br><span class="line">        &lt;data&gt;AAAPAAAACHAAAAABACAAAA&#x3D;&#x3D;&lt;&#x2F;data&gt;    &lt;!-- 3840x2160 --&gt;</span><br><span class="line">        &lt;data&gt;AAAeAAAAEOAAAAABACAAAA&#x3D;&#x3D;&lt;&#x2F;data&gt;</span><br><span class="line">    &lt;&#x2F;array&gt;</span><br><span class="line">&lt;&#x2F;dict&gt;</span><br><span class="line">&lt;&#x2F;plist&gt;</span><br></pre></td></tr></table></figure><br>文件配置完成之后就按照2.4.1中的②③④操作即可。</p><h1 id="2-5-使用RDM进行切换"><a href="#2-5-使用RDM进行切换" class="headerlink" title="2.5 使用RDM进行切换"></a>2.5 使用RDM进行切换</h1><p>重启系统打开RDM，这就可以进行切换了。<br>如图：<br><img src="/2020/05/20/Mac200520-macOS%E5%BC%80%E5%90%AFHiDPI%E5%A4%96%E6%8E%A52K%E6%98%BE%E7%A4%BA%E5%99%A8/200520-2.png" style="zoom: 50%;"></p><h1 id="3-最后总结"><a href="#3-最后总结" class="headerlink" title="3 最后总结"></a>3 最后总结</h1><p>这个方法是我自己尝试过不仅能够调节分辨率，而且也不会出现字体发飘的现象，而且应该是比较安全的一个方法。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Mac </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> HiDPI </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Office2019安装冲突解决方法 ErrorCode 30182-392</title>
+      <link href="2020/04/24/Mac200424-Office2019%E5%AE%89%E8%A3%85%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95-ErrorCode-30182-392/"/>
+      <url>2020/04/24/Mac200424-Office2019%E5%AE%89%E8%A3%85%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95-ErrorCode-30182-392/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2020/04/24/Mac200424-Office2019%E5%AE%89%E8%A3%85%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95-ErrorCode-30182-392/200424-1.jpg" alt="The First Title Picture"></p><a id="more"></a><h1 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h1><p>挂载Office 2019安装镜像后直接安装会出现如下错误：<br><img src="/2020/04/24/Mac200424-Office2019%E5%AE%89%E8%A3%85%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95-ErrorCode-30182-392/1.png" alt><br>问题原因在于Office 365与Offfice2019版本号相同（均为16.0）<a href="https://docs.microsoft.com/zh-cn/DeployOffice/install-different-office-visio-and-project-versions-on-the-same-computer" target="_blank" rel="noopener">官方页面-各Office版本号</a></p><h1 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h1><p><strong>解决方法就是利用官方部署工具进行安装，绕过版本冲突问题 </strong></p><h2 id="1-下载安装Office-部署工具（Office-Deployment-Tool）"><a href="#1-下载安装Office-部署工具（Office-Deployment-Tool）" class="headerlink" title="1.下载安装Office 部署工具（Office Deployment Tool）"></a>1.下载安装Office 部署工具（<a href="https://www.microsoft.com/en-us/download/confirmation.aspx?id=49117" target="_blank" rel="noopener">Office Deployment Tool</a>）</h2><h2 id="2-解压至任意文件夹"><a href="#2-解压至任意文件夹" class="headerlink" title="2.解压至任意文件夹"></a>2.解压至任意文件夹</h2><p>运行上一步下载的文件，会自动解压到你指定的文件夹<br><img src="/2020/04/24/Mac200424-Office2019%E5%AE%89%E8%A3%85%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95-ErrorCode-30182-392/2.png" alt></p><h2 id="3-新建一个“configuration-xml”配置文件"><a href="#3-新建一个“configuration-xml”配置文件" class="headerlink" title="3.新建一个“configuration.xml”配置文件"></a>3.新建一个“configuration.xml”配置文件</h2><p>配置文件的配置方法参考（<a href="https://docs.microsoft.com/zh-cn/deployoffice/office-deployment-tool-configuration-options" target="_blank" rel="noopener">配置文件官方说明</a>）</p><p>可参考以下进行配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;Configuration&gt;</span><br><span class="line">  &lt;Add </span><br><span class="line">       SourcePath&#x3D;&quot;C:\OfficeDeployment&quot; </span><br><span class="line">       DownloadPath&#x3D;&quot;V:\&quot;</span><br><span class="line">       OfficeClientEdition&#x3D;&quot;32&quot;</span><br><span class="line">   Version&#x3D;&quot;16.0.10730.20102&quot; &gt;</span><br><span class="line">    &lt;Product ID&#x3D;&quot;VisioStd2019Retail&quot;&gt;</span><br><span class="line">      &lt;Language ID&#x3D;&quot;en-us&quot; &#x2F;&gt;</span><br><span class="line">    &lt;&#x2F;Product&gt;</span><br><span class="line">  &lt;&#x2F;Add&gt;</span><br><span class="line">&lt;&#x2F;Configuration&gt;</span><br></pre></td></tr></table></figure><br><img src="/2020/04/24/Mac200424-Office2019%E5%AE%89%E8%A3%85%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95-ErrorCode-30182-392/5.jpg" alt><br><strong>元素解释：</strong></p><ul><li>SourcePath：用于放安装包的临时文件夹，任意空目录即可</li><li>DownloadPath：安装包下载路径，因为已经挂载虚拟磁盘故填入虚拟磁盘路径</li><li>OfficeClientEdition：安装的Office软件位数，32或64<br><strong>(如果不是专业用户，32位的版本兼容性会更好) </strong></li><li>Version：安装的Office软件版本号，在虚拟磁盘文件内可以找到（如：H:\Office\Data\16.0.10730.20102）<br><img src="/2020/04/24/Mac200424-Office2019%E5%AE%89%E8%A3%85%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95-ErrorCode-30182-392/9.jpg" alt></li><li>Product ID：产品ID，参考<a href="https://docs.microsoft.com/zh-cn/office365/troubleshoot/installation/product-ids-supported-office-deployment-click-to-run" target="_blank" rel="noopener">官方产品ID目录</a>，按照安装的软件输入对应产品ID<br>（VisioStd2019Retail代表Visio2019标准零售版）</li><li>Language ID：安装版本的语言，输入已挂载镜像安装文件拥有语言，可通过查看镜像文件名得知</li></ul><p><img src="/2020/04/24/Mac200424-Office2019%E5%AE%89%E8%A3%85%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95-ErrorCode-30182-392/3.jpg" alt></p><h2 id="4-安装配置文件"><a href="#4-安装配置文件" class="headerlink" title="4.安装配置文件"></a>4.安装配置文件</h2><p>Win+R运行CMD，进入部署工具的目录<code>cd /d E:\office-deployment</code>，运行安装配置文件<code>setup /download configuration.xml</code><br><img src="/2020/04/24/Mac200424-Office2019%E5%AE%89%E8%A3%85%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95-ErrorCode-30182-392/4.jpg" alt></p><h2 id="5-将虚拟磁盘的Setup-exe拷贝至SourcePath路径下"><a href="#5-将虚拟磁盘的Setup-exe拷贝至SourcePath路径下" class="headerlink" title="5.将虚拟磁盘的Setup.exe拷贝至SourcePath路径下"></a>5.将虚拟磁盘的Setup.exe拷贝至SourcePath路径下</h2><p>之后可能会出现“0-1007(0)”安装错误，关掉提示不用管。打开在<code>SourcePath</code>填入的路径，在目录下应该会出现一个Office文件夹。<br><img src="/2020/04/24/Mac200424-Office2019%E5%AE%89%E8%A3%85%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95-ErrorCode-30182-392/6.jpg" alt><br>将虚拟磁盘的Setup.exe拷贝至SourcePath路径下。<br><img src="/2020/04/24/Mac200424-Office2019%E5%AE%89%E8%A3%85%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95-ErrorCode-30182-392/8.jpg" alt></p><h2 id="6-运行SourcePath路径下的Setup-exe进行安装即可"><a href="#6-运行SourcePath路径下的Setup-exe进行安装即可" class="headerlink" title="6.运行SourcePath路径下的Setup.exe进行安装即可"></a>6.运行SourcePath路径下的Setup.exe进行安装即可</h2><p><img src="/2020/04/24/Mac200424-Office2019%E5%AE%89%E8%A3%85%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95-ErrorCode-30182-392/7.jpg" alt></p><h1 id="Note"><a href="#Note" class="headerlink" title="Note"></a>Note</h1><ul><li>在这里吹爆<a href="http://www.carrotchou.blog/19209.html" target="_blank" rel="noopener">胡萝卜周</a>这个网站和这个博主，互联网的自由就是体现在这种无私奉献的精神上（当然我们不是推荐使用盗版，在能力范围之内我们都应该支持版权精神支持正版）</li><li>为什么用本文中这个麻烦的方法，而不直接用相对简单的一键安装，因为之前已经装了32位的版本，而且装了2016版的OneNote，为了保留之前的版本的前提下进行升级。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> Mac </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Office </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>PowerPoint安装IguanaTex插件</title>
+      <link href="2020/04/22/Mac200422-PowerPoint%E5%AE%89%E8%A3%85IguanaTex%E6%8F%92%E4%BB%B6/"/>
+      <url>2020/04/22/Mac200422-PowerPoint%E5%AE%89%E8%A3%85IguanaTex%E6%8F%92%E4%BB%B6/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2020/04/22/Mac200422-PowerPoint%E5%AE%89%E8%A3%85IguanaTex%E6%8F%92%E4%BB%B6/181212-2.jpg" alt="The First Title Picture"></p><a id="more"></a><h1 id="1-前提"><a href="#1-前提" class="headerlink" title="1 前提"></a>1 前提</h1><p>电脑已经配置好latex环境</p><h1 id="2-安装过程"><a href="#2-安装过程" class="headerlink" title="2 安装过程"></a>2 安装过程</h1><p><strong>2.1 下载IguanaTex_v1_56插件</strong></p><p><a href="http://www.jonathanleroux.org/software/iguanatex/download.html" target="_blank" rel="noopener">官网下载地址</a><br>下载的文件格式为：<code>IguanaTex v1.56 (.ppam) .ppam</code></p><p><strong>2.2 移动插件</strong></p><p>将IguanaTex v1.56 .ppam移动到<code>C:\Users\ 你的用户名\AppData\Roaming\Microsoft\AddIns</code>目录下。</p><p><strong>2.3 创建临时文件夹</strong></p><p>在C盘创建一个空白文件夹，并复制该文件夹路径。</p><p><strong>2.4 设置PPT激活Iguana</strong></p><p>打开<code>PowerPoint &gt; 文件 &gt; 选项 &gt; 加载项 &gt; 管理 &gt; 下拉 &gt; 选择PowerPoint加载项</code>，选择<code>IguanaTex v1.56 .ppam</code><br><img src="/2020/04/22/Mac200422-PowerPoint%E5%AE%89%E8%A3%85IguanaTex%E6%8F%92%E4%BB%B6/2020-04-22 170441.jpg" alt></p><p><strong>2.5 设置Iguana</strong></p><p>在PowerPoint面板点击<code>IguanaTex</code>，点击<code>main settings</code>,在路径处粘贴之前创建的文件夹路径。<br><img src="/2020/04/22/Mac200422-PowerPoint%E5%AE%89%E8%A3%85IguanaTex%E6%8F%92%E4%BB%B6/2020-04-22 170534.jpg" alt></p><h1 id="3-使用"><a href="#3-使用" class="headerlink" title="3 使用"></a>3 使用</h1><p>使用就是按照正常的LaTex的输入使用即可。<br><img src="/2020/04/22/Mac200422-PowerPoint%E5%AE%89%E8%A3%85IguanaTex%E6%8F%92%E4%BB%B6/2020-04-22 170550.jpg" alt></p><p>以下为<a href="http://www.jonathanleroux.org/software/iguanatex/download.html" target="_blank" rel="noopener">Reference</a>：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Installation:</span><br><span class="line"></span><br><span class="line">1.Load the add-in:</span><br><span class="line">in “File” &gt; “Options” &gt; “Add-Ins” &gt; “Manage:”, choose “PowerPoint Add-Ins” then “Go…”, then click “Add New”, select the .ppam file in the default Add-In folder or in the folder where you downloaded it, then “Close”</span><br><span class="line"></span><br><span class="line">2.Create and set a temporary file folder:</span><br><span class="line">IguanaTex needs access to a folder with read&#x2F;write permissions to store temporary files.</span><br><span class="line">The default is “C:\Temp”. If you have write permissions under “C:”, create the folder “C:\Temp”. You’re all set.</span><br><span class="line">If you cannot create this folder, choose&#x2F;create a folder with write permission at any other location. In the IguanaTex tab, choose “Main Settings” and put the path to the folder of your choice. You can also use a relative path under the presentation’s folder (e.g., “.” for the presentation folder itself).</span><br><span class="line"></span><br><span class="line">3.(Optional, for pdflatex&#x2F;xelatex&#x2F;lualatex support) Install and set path to GhostScript and ImageMagick:</span><br><span class="line">To use the PDF to PNG conversion (i.e., with pdflatex, xelatex and lualatex) instead of the default DVI to PNG one, you need to install GhostScript and ImageMagick and set the appropriate full paths to gswin32c.exe&#x2F;gswin64c.exe (note the “c”!) and convert.exe in the “Main Settings” window. When installing ImageMagick, make sure to check the box to “Install development headers and libraries for C and C++” and (in recent versions) to “Install legacy utilities (e.g. convert)”. Download links are provided in the Main Settings window.</span><br><span class="line"></span><br><span class="line">4.(Optional, for vector graphics support) Install and set path to TeX2img:</span><br><span class="line">To use vector graphics output, you need to install TeX2img (here is the direct download link for recommended version 2.1.0). After unpacking TeX2img somewhere on your machine, please run TeX2img.exe once to set the various paths to latex&#x2F;ghostscript, then set the full path to TeX2imgc.exe (note the “c”!) in the “Main Settings” window.</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> Mac </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> PowerPoint </tag>
+            
+            <tag> LaTex </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Simulation Resolving Low-Level Graphics Issues</title>
+      <link href="2020/04/17/Research200417-Resolving-Low-Level-Graphics-Issues/"/>
+      <url>2020/04/17/Research200417-Resolving-Low-Level-Graphics-Issues/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2020/04/17/Research200417-Resolving-Low-Level-Graphics-Issues/200417-1.jpg" alt="The First Title Picture"></p><a id="more"></a><h1 id="Resolving-Low-Level-Graphics-Issues"><a href="#Resolving-Low-Level-Graphics-Issues" class="headerlink" title="Resolving Low-Level Graphics Issues"></a>Resolving Low-Level Graphics Issues</h1><p>在远程操作其他工作站上的matlab的时候，无法显示仿真结果，但是在真实的工作站上操作的话又可以看到simulation的结果，并且远程的时候进行仿真，就会显示以下的错误提示：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> &gt;&gt;MATLAB has experienced a low-level graphics error, and may not have drawn correctly.</span><br><span class="line">Read about what you can do to prevent this issue at Resolving Low-Level Graphics Issues then restart MATLAB.</span><br><span class="line">To share details of this issue with MathWorks technical support,</span><br><span class="line">please include this file with your service request.</span><br></pre></td></tr></table></figure><p>查阅相应资料之后matlab普遍存在这个问题，解决办法见<a href="https://jp.mathworks.com/help/matlab/creating_plots/resolving-low-level-graphics-issues.html?lang=en" target="_blank" rel="noopener">官网</a>。</p><p>网上大神方法见<a href="https://jp.mathworks.com/matlabcentral/answers/157894-resolving-low-level-graphics-issues-in-matlab" target="_blank" rel="noopener">这里</a>。</p><p>自己实践操作，主要就两步：</p><p>1.To set your preferences so that MATLAB always starts with software OpenGL on this computer, execute this command at the MATLAB command line:</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">opengl(&#39;save&#39;,&#39;software&#39;)</span><br></pre></td></tr></table></figure><p>2.Upgrade your graphics drivers to the latest versions available</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">这里直接就打开你的GPU然后在管理软件里点击更新就可以。</span><br></pre></td></tr></table></figure><p>以下为引用原答者的回答：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">You can work around many graphics issues by using the software version of OpenGL® built-into MATLAB instead of using your graphics hardware. In some cases, MATLAB automatically switches to software OpenGL, for example, if it detects known issues such as outdated drivers or graphics virtualization. Software OpenGL does not support some graphics features, such as graphics smoothing.</span><br><span class="line">To determine if you are using hardware or software OpenGL, type &#39;opengl info&#39;. The returned information contains the line Software: &#39;false&#39; if you are using hardware OpenGL or Software: &#39;true&#39; if you are using software OpenGL.</span><br><span class="line">To switch from hardware to software OpenGL, start MATLAB from the command prompt or terminal on your system using this command:</span><br><span class="line">&#96;matlab -softwareopengl&#96;</span><br><span class="line">To set your preferences so that MATLAB always starts with software OpenGL on this computer, execute this command at the MATLAB command line:</span><br><span class="line">&#96;opengl(&#39;save&#39;,&#39;software&#39;)&#96;</span><br><span class="line">These commands work only on Windows® and Linux® systems. Macintosh systems do not support software OpenGL. For more information about switching between hardware and software OpenGL, see the documentation for &lt;http:&#x2F;&#x2F;www.mathworks.com&#x2F;help&#x2F;matlab&#x2F;ref&#x2F;opengl.html opengl&gt; and the Renderer property for figures.</span><br><span class="line">For the best results with graphics, use graphics hardware that is compliant with OpenGL 2.1 or later. For more information about the graphics features that different versions of OpenGL support, see System Requirements for Graphics.</span><br><span class="line">Graphics hardware vendors frequently provide updated graphics drivers that improve hardware performance. To help ensure that your graphics hardware works with MATLAB, upgrade your graphics drivers to the latest versions available.</span><br><span class="line">Check your computer manufacturer website for driver updates, for example, Dell® or HP®. If no updates are provided, then check your graphics hardware vendor website, such as one of the vendors listed here. To determine your vendor, type opengl info and check the Vendor field.</span><br><span class="line">- AMD</span><br><span class="line">- NVIDIA</span><br><span class="line">- Intel</span><br><span class="line">Alternatively, you may be able to check your driver vendor and versions outside of MATLAB. On Windows systems, enter dxdiag into the Command Prompt, and look at the &quot;Display&quot; tab. Certain Linux distributions will allow you to use glxinfo in the Terminal to see OpenGL and driver information.</span><br><span class="line">If you saved a setting to always start MATLAB with software OpenGL, then after updating your drivers, you can revert that setting by executing:</span><br><span class="line">&#96;opengl(&#39;save&#39;,&#39;hardware&#39;)&#96;</span><br><span class="line">Then restart MATLAB.</span><br><span class="line">If you cannot resolve the issues using the options described here, then you might have encountered a bug in MATLAB. Please contact MathWorks Technical Support and provide the following information:</span><br><span class="line">- Output of executing opengl info</span><br><span class="line">- Whether your code runs without error when using software OpenGL.</span><br><span class="line">- Whether your code runs without error on a different computer. Please provide the output of opengl info for all computers you have tested your code on.</span><br><span class="line">- Some error messages contain a link to a file with details about the graphics error you encountered. If a link to this file is provided, please include this file with your service request.</span><br><span class="line">- The full text of the error that appears. If a crash occurs, please provide the crash report generated by MATLAB.</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> Research </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Matlab </tag>
+            
+            <tag> Simulation </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>群晖添加新的硬盘</title>
+      <link href="2020/04/16/Nas200416-%E7%BE%A4%E6%99%96%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E7%A1%AC%E7%9B%98/"/>
+      <url>2020/04/16/Nas200416-%E7%BE%A4%E6%99%96%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E7%A1%AC%E7%9B%98/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2020/04/16/Nas200416-%E7%BE%A4%E6%99%96%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E7%A1%AC%E7%9B%98/200303-1.jpg" alt="The First Title Picture" title="Optional Title"></p><a id="more"></a><p><strong>本文介绍让群晖NAS系统添加新的硬盘</strong><br>群晖系统已经安装好，在装有硬盘的情况下，怎么添加新的硬盘？</p><h1 id="1-添加硬盘到Synology"><a href="#1-添加硬盘到Synology" class="headerlink" title="1 添加硬盘到Synology"></a>1 添加硬盘到Synology</h1><p><strong>关于群晖是否支持热拔，查了一下应该是根据具体型号的不同而不同，但是我个人觉得，都在更换硬盘了，为了安全起见，不要在意这关机开机的几分钟，群晖对于QNAP来说，开机关机的速度已经非常快了。</strong><br>以下引用<a href="https://www.synology.com/zh-cn/knowledgebase/DSM/help/DSM/StorageManager/storage_pool_expand_add_disk" target="_blank" rel="noopener">群晖官网指南</a>：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">若要添加硬盘到存储池：</span><br><span class="line">1.关闭 Synology NAS。（如果 Synology NAS 支持热交换，可跳过此步骤。）</span><br><span class="line">2.将新硬盘安装到空置的硬盘插槽。</span><br><span class="line">注：为了避免伤及自身或损坏 Synology NAS，请按 Synology 产品硬件安装指南中的硬盘安装说明进行操作。</span><br><span class="line">3.打开 Synology NAS 并启动存储管理器。</span><br><span class="line">4.选择您要扩充的存储池。然后在操作下拉菜单中单击添加硬盘。</span><br><span class="line">5.选择要用于扩充存储池的硬盘。</span><br><span class="line">6.按照设置向导的步骤完成操作。</span><br></pre></td></tr></table></figure><h1 id="2-设置硬件"><a href="#2-设置硬件" class="headerlink" title="2 设置硬件"></a>2 设置硬件</h1><p><strong>2.1 拔出插槽</strong><br><img src="/2020/04/16/Nas200416-%E7%BE%A4%E6%99%96%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E7%A1%AC%E7%9B%98/nas200416-01.jpg" alt title="Optional Title"><br><strong>2.2 拧上螺丝</strong><br>3.5的硬盘直接用卡扣卡住就行，非常的方便，2.5的硬盘稍微麻烦一点，你需要把两侧的卡扣取下来，然后保存好，万一以后要用到，然后将2.5的硬盘后面的四颗螺丝拧上就行。（这里的四颗硬盘螺丝得自备）<br><img src="/2020/04/16/Nas200416-%E7%BE%A4%E6%99%96%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E7%A1%AC%E7%9B%98/nas200416-03.png" alt title="Optional Title"><br>2.5的硬盘应该不会误装，就一面有孔，安上之后，往NAS里面怼进去就行。<br><img src="/2020/04/16/Nas200416-%E7%BE%A4%E6%99%96%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E7%A1%AC%E7%9B%98/nas200416-04.png" alt title="Optional Title"></p><h1 id="3-设置软件"><a href="#3-设置软件" class="headerlink" title="3 设置软件"></a>3 设置软件</h1><p>1.打开设置页面<br><img src="/2020/04/16/Nas200416-%E7%BE%A4%E6%99%96%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E7%A1%AC%E7%9B%98/nas200416-07.png" alt title="Optional Title"><br>2.打开“存储空间管理员”<br><img src="/2020/04/16/Nas200416-%E7%BE%A4%E6%99%96%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E7%A1%AC%E7%9B%98/nas200416-08.png" alt title="Optional Title"><br>3.蓝色的是以前添加好的，第四块绿色是刚刚添加的。这个状态硬盘的空间还不能使用。<br><img src="/2020/04/16/Nas200416-%E7%BE%A4%E6%99%96%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E7%A1%AC%E7%9B%98/nas200416-09.png" alt title="Optional Title"><br>4.单击“存储空间”菜单，单击“新增”按钮<br><img src="/2020/04/16/Nas200416-%E7%BE%A4%E6%99%96%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E7%A1%AC%E7%9B%98/nas200416-10.png" alt title="Optional Title"><br>5.使用“快速”单击“下一步”<br><img src="/2020/04/16/Nas200416-%E7%BE%A4%E6%99%96%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E7%A1%AC%E7%9B%98/nas200416-11.png" alt title="Optional Title"><br>6.增加单块硬盘没有更多的选择，单击“下一步”<br><img src="/2020/04/16/Nas200416-%E7%BE%A4%E6%99%96%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E7%A1%AC%E7%9B%98/nas200416-12.png" alt title="Optional Title"><br>7.警告窗口告诉我们，原来硬盘上的内容都会被清除。因为硬盘的格式与WINDOWS下是不同的。<br><img src="/2020/04/16/Nas200416-%E7%BE%A4%E6%99%96%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E7%A1%AC%E7%9B%98/nas200416-13.png" alt title="Optional Title"><br>8.硬盘检查的步骤我是跳过的，选择“否”单击下一步<br><img src="/2020/04/16/Nas200416-%E7%BE%A4%E6%99%96%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E7%A1%AC%E7%9B%98/nas200416-14.png" alt title="Optional Title"><br>9.文件系统选择“Btrfs”，单击下一步<br><img src="/2020/04/16/Nas200416-%E7%BE%A4%E6%99%96%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E7%A1%AC%E7%9B%98/nas200416-15.png" alt title="Optional Title"><br>10.“编辑描述”相当于给硬盘写一个方便识别的名称，比如“古典音乐”，单击下一步<br><img src="/2020/04/16/Nas200416-%E7%BE%A4%E6%99%96%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E7%A1%AC%E7%9B%98/nas200416-17.png" alt title="Optional Title"><br>11.单击应用按钮，运行片刻后显示这样的表示硬盘已经添加成功<br><img src="/2020/04/16/Nas200416-%E7%BE%A4%E6%99%96%E6%B7%BB%E5%8A%A0%E6%96%B0%E7%9A%84%E7%A1%AC%E7%9B%98/nas200416-18.png" alt title="Optional Title"><br>从图片上可以看出，四块硬盘大小可以不同，尺寸也可以不同，支持混用。</p><h1 id="4-使用"><a href="#4-使用" class="headerlink" title="4 使用"></a>4 使用</h1><p>经过这样的操作，硬盘的空间还不能被访问。最后只需要在创建共享文件夹就可以了。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Nas </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Nas </tag>
+            
+            <tag> Synology </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>人生忠告</title>
+      <link href="2020/04/15/Blog200415-%E4%BA%BA%E7%94%9F%E5%BF%A0%E5%91%8A/"/>
+      <url>2020/04/15/Blog200415-%E4%BA%BA%E7%94%9F%E5%BF%A0%E5%91%8A/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2020/04/15/Blog200415-%E4%BA%BA%E7%94%9F%E5%BF%A0%E5%91%8A/190101-2.jpg" alt="The First Title Picture"></p><a id="more"></a><h2 id="人生建议"><a href="#人生建议" class="headerlink" title="人生建议"></a>人生建议</h2><p>1.即便天上下刀子也要运动。癌症病人的精力只有20点，每天运动的人精力值是120点。<br>2.在中国薪资跟权限挂钩，跟领导说涨工资不如说涨权限。<br>3.坑过你的朋友当时立马拉黑。骗了你你原谅他，他背后说你煞笔你信不信。坑过你的人90%会坑你第二遍。拉黑是及时止损。<br>4.啪啪别问对方爽不爽，爽早叫出来了，看也看出来了。<br>5.现在你不是找不到热爱，只不过坚持不了热爱。直到你以为你的热爱不是终生所爱。<br>6.把失败的原因全部归咎于外界的人永远不会成功，自省的人成功只是时间问题。<br>7.我妈从小教我，每次扔垃圾的时候，把尖锐的东西用胶带缠起来。出门看见保洁阿姨要问好。<br>8.当你熬夜脑袋嗡嗡的开始播放【死亡旋律】的时候，你该睡觉了。有过体验的朋友在评论区说一声。<br>9.年轻再穷也不要丧失心中的希望。大家都是在40岁开始挣钱的，凭什么你是人中龙凤？那些过早成功的人大部分都会栽跟头。除非这个人能够每天自省。<br>10.在你面前贼成熟的女孩一点都不爱你。我老婆在我旁边是个智障，出去又独当一面。<br>11.发朋友圈之前，要检查一遍有没有未回复的消息。<br>12.保持良好作息的方法，是给重要的时间节点订上闹钟。比如21点洗漱、22点看书、23点睡觉。<br>14.人可以老好人，但一定要学会发脾气。没办法，有的人就看着你的脸色疯狂的试探你。<br>15.永远保留自己隐藏自己30%，就好像穿着衣服的人诱惑力更大一点。<br>16.微信上有啥事直接说，在吗在吗我不在呀。<br>17.合伙人选错了，可是会有灭顶之灾的哦。榜样就看当当网。<br>18.借给别人钱要做好他不还的准备，不想借我建议直接说没钱。借别人的钱要给人算上年化收益到时间一定还。<br>19.做投资上杠杆钱，给自己留条失败的路。在中国只有买房子可以加杠杆，其他都不要。即便觉得自己赢定了，也要留路。<br>20.你的精神是有滞后性的，学习中一个消息的跳出打断了我们。你的眼睛回到了书本，思维却需要1分钟才能回来。学习要把手机拿出去。<br>22.读书是提高一个人速度最快的方法。读书的关键点在于不断内省知识，吞噬知识为己用，脱壳化蝶蜕变自己。<br>23.每天冥想可以让自己变聪明，增加大脑灰质的厚度。还能练习控制自己的注意力，减少身体疼痛和抑郁发生的可能性。我每次写这种文章必须推荐一次。<br>24.每次走在别人身前，经过门帘，可以用手帮别人挡一下。<br>25.财富是守恒的，当你赚钱少的时候说明你提供的价值比较少。<br>26.当有人跟你扯感情的时候你要知道，他要损害你的利益了。<br>27.当你成功的时候过分炫耀，会刺痛身边人的神经。等你有难时不踹你就不错了。做人不仅要低调，还要多送东西出去。<br>28.当你加不认识的大牛想要问问题，先总结好经过自己思考的问题。并且直接说可以付费咨询吗。没有谁的时间是要浪费在陌生人身上的。相信我，他带给你的价值比你那几块钱红包重要的多。<br>29.身边的煞笔一定要惯着，这叫捧杀。<br>30.你的发小是宝藏，你要好好的守护好他们。<br>31.人的印象是又很多细小的事情堆积而成的，比如看着别人的眼睛说谢谢你。<br>32.要学会用钱买时间，免费的课程你学不完。人就是贱。<br>33.如果你有定期焦虑，说明你格局和目标小了。一个人如果不断进步是不会定期焦虑的。<br>34.不把翻身的希望寄托到任何人身上，能让自己改变的永远只有自己。<br>35.遇到杠精不要骂脏话回怼，静静的拉黑也是及时止损。没有必要改变他的价值观，也改变不了。<br>36.你问问题别人支支吾吾的时候，就别问下去了。<br>37.读书不一定能成功，但成功的人一定一直在读书。一本经典的书籍，就像一个充满智慧的老者，毫无保留的告诉你一生的智慧。每看1本书，就多过了一生。<br>38.平时不要贪小便宜，麻烦别人消耗的是人情。人情比钱还要麻烦。<br>39.对身边的亲人温柔一点，对慢慢变老的爸爸妈妈充满耐心。是最好的品质。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Blog </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Blog </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>MATLAB导出图程序</title>
+      <link href="2020/03/24/Research200324-MATLAB%E5%AF%BC%E5%87%BA%E5%9B%BE%E7%A8%8B%E5%BA%8F/"/>
+      <url>2020/03/24/Research200324-MATLAB%E5%AF%BC%E5%87%BA%E5%9B%BE%E7%A8%8B%E5%BA%8F/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2020/03/24/Research200324-MATLAB%E5%AF%BC%E5%87%BA%E5%9B%BE%E7%A8%8B%E5%BA%8F/181212-2.jpg" alt="The First Title Picture"></p><a id="more"></a><p><strong>本文将以代码的形式快速介绍MATLAB导出图到Paper</strong></p><h1 id="1-从simulation导出数"><a href="#1-从simulation导出数" class="headerlink" title="1 从simulation导出数"></a>1 从simulation导出数</h1><p><img src="/2020/03/24/Research200324-MATLAB%E5%AF%BC%E5%87%BA%E5%9B%BE%E7%A8%8B%E5%BA%8F/200324-2.jpg" alt="The First Title Picture"></p><h1 id="2-与simulation同源文件夹下创建导图m文件"><a href="#2-与simulation同源文件夹下创建导图m文件" class="headerlink" title="2 与simulation同源文件夹下创建导图m文件"></a>2 与simulation同源文件夹下创建导图m文件</h1><p><img src="/2020/03/24/Research200324-MATLAB%E5%AF%BC%E5%87%BA%E5%9B%BE%E7%A8%8B%E5%BA%8F/200324-1.png" alt="The First Title Picture"></p><p><strong>代码如下：</strong></p><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">%実験後のデータ処理用M-ファイル</span></span><br><span class="line"><span class="comment">% clear all           %ワークスペースクリア</span></span><br><span class="line"><span class="comment">% close all　　　　　　%figureウインドを閉じる</span></span><br><span class="line"><span class="comment">% load adp.mat     %matファイルをワークスペースに読み込み</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%%%%%%%全体のフォント設定%%%%%%%%%%%%%%%%%%%%%%</span></span><br><span class="line"></span><br><span class="line">set(<span class="number">0</span>,<span class="string">'defaultAxesFontSize'</span>,<span class="number">15</span>);</span><br><span class="line">set(<span class="number">0</span>,<span class="string">'defaultAxesFontName'</span>,<span class="string">'Times New Roman'</span>);</span><br><span class="line">set(<span class="number">0</span>,<span class="string">'defaultTextFontsize'</span>,<span class="number">15</span>);</span><br><span class="line">set(<span class="number">0</span>,<span class="string">'defaultTextFontName'</span>,<span class="string">'Times New Roman'</span>);</span><br><span class="line">set(<span class="number">0</span>,<span class="string">'DefaultAxesLinewidth'</span>,<span class="number">1.5</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">%%%%%%%図の作成%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span></span><br><span class="line">load y.mat;</span><br><span class="line">load y_m.mat;</span><br><span class="line">load u.mat;</span><br><span class="line">load k.mat;</span><br><span class="line">load theta.mat;</span><br><span class="line"></span><br><span class="line">S=get(<span class="number">0</span>,<span class="string">'ScreenSize'</span>);</span><br><span class="line"><span class="comment">%%</span></span><br><span class="line"><span class="comment">%出力</span></span><br><span class="line"><span class="built_in">figure</span>(<span class="string">'Position'</span>,[<span class="number">0</span> S(<span class="number">4</span>)/<span class="number">3</span> <span class="number">1.618</span>*S(<span class="number">3</span>)/<span class="number">3</span> S(<span class="number">3</span>)/<span class="number">3</span>])   <span class="comment">%図のサイズ（縦横黄金比）、表示位置</span></span><br><span class="line">X=<span class="number">0</span>:sampletime:time;</span><br><span class="line">x=<span class="number">1</span>:<span class="number">1</span>:<span class="built_in">length</span>(X);</span><br><span class="line"></span><br><span class="line"><span class="built_in">plot</span>(X,y(<span class="number">2</span>,x),<span class="string">'r'</span>,<span class="string">'Linewidth'</span>,<span class="number">1.5</span>);  <span class="comment">%グラフの描写（Ecxelでいう散布図形式）</span></span><br><span class="line"><span class="comment">%plot(x軸の値 , y軸の値　, '線の色'　, 線の太さ)</span></span><br><span class="line"><span class="comment">%   1:A:Bの意味　１からBまでA個おき</span></span><br><span class="line"><span class="comment">%   'b--'の意味　青色の破線　（このほかには'b','r','k','g'など）</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">hold</span> on;    <span class="comment">%描写を保持（これをしないと次の描写で消えてしまう）</span></span><br><span class="line">grid on;    <span class="comment">%目盛りの表示</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">plot</span>(X,y_m(<span class="number">2</span>,x),<span class="string">'b--'</span>,<span class="string">'Linewidth'</span>,<span class="number">1.2</span>); </span><br><span class="line"><span class="built_in">hold</span> on;    </span><br><span class="line">grid on;    </span><br><span class="line"></span><br><span class="line">ylabel(<span class="string">'Output'</span>,<span class="string">'FontSize'</span>,<span class="number">20</span>) <span class="comment">%y軸のタイトル</span></span><br><span class="line">xlabel(<span class="string">'Time [sec]'</span>,<span class="string">'FontSize'</span>,<span class="number">20</span>)          <span class="comment">%x軸のタイトル</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">legend</span>(<span class="string">'\sly\rm(\slt\rm)'</span>,<span class="string">'\sly_&#123;m&#125;\rm(\slt\rm)'</span>,<span class="string">'Location'</span>,<span class="string">'northeast'</span>) <span class="comment">%凡例</span></span><br><span class="line"><span class="comment">% %legend('1本目の名前','2本目の名前','Location','凡例の表示位置')</span></span><br><span class="line"><span class="comment">% set(legend,'FontSize',20);%フォントのサイズの変更</span></span><br><span class="line"></span><br><span class="line">axis([<span class="number">0</span> <span class="number">100</span> <span class="number">0</span> <span class="number">4.5</span>]);        <span class="comment">%表示範囲の指定</span></span><br><span class="line"><span class="comment">%axis([x軸最小値　x軸最大値　y軸最小値　y軸最大値])</span></span><br><span class="line"></span><br><span class="line">saveas(gcf,<span class="string">'output_y.eps'</span>,<span class="string">'epsc'</span>)</span><br><span class="line">saveas(gcf,<span class="string">'output_y.emf'</span>,<span class="string">'meta'</span>)</span><br><span class="line">saveas(gcf,<span class="string">'output_y.jpg'</span>,<span class="string">'jpg'</span>)</span><br><span class="line"><span class="comment">%%</span></span><br><span class="line"><span class="comment">%input</span></span><br><span class="line"><span class="built_in">figure</span>(<span class="string">'Position'</span>,[<span class="number">0</span> S(<span class="number">4</span>)/<span class="number">3</span> <span class="number">1.618</span>*S(<span class="number">3</span>)/<span class="number">3</span> S(<span class="number">3</span>)/<span class="number">3</span>])   <span class="comment">%図のサイズ（縦横黄金比）、表示位置</span></span><br><span class="line">X=<span class="number">0</span>:sampletime:time;</span><br><span class="line">x=<span class="number">1</span>:<span class="number">1</span>:<span class="built_in">length</span>(X);</span><br><span class="line"></span><br><span class="line"><span class="built_in">plot</span>(X,u(<span class="number">2</span>,x),<span class="string">'b'</span>,<span class="string">'Linewidth'</span>,<span class="number">1.5</span>);  <span class="comment">%グラフの描写（Ecxelでいう散布図形式）</span></span><br><span class="line"><span class="comment">%plot(x軸の値 , y軸の値　, '線の色'　, 線の太さ)</span></span><br><span class="line"><span class="comment">%   1:A:Bの意味　１からBまでA個おき</span></span><br><span class="line"><span class="comment">%   'b--'の意味　青色の破線　（このほかには'b','r','k','g'など）</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">hold</span> on;    <span class="comment">%描写を保持（これをしないと次の描写で消えてしまう）</span></span><br><span class="line">grid on;    <span class="comment">%目盛りの表示 </span></span><br><span class="line"></span><br><span class="line">ylabel(<span class="string">'Input'</span>,<span class="string">'FontSize'</span>,<span class="number">20</span>) <span class="comment">%y軸のタイトル</span></span><br><span class="line">xlabel(<span class="string">'Time [sec]'</span>,<span class="string">'FontSize'</span>,<span class="number">20</span>)          <span class="comment">%x軸のタイトル</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">legend</span>(<span class="string">'\sly\rm(\slt\rm)'</span>,<span class="string">'\sly_&#123;m&#125;\rm(\slt\rm)'</span>,<span class="string">'Location'</span>,<span class="string">'northeast'</span>) <span class="comment">%凡例</span></span><br><span class="line"><span class="comment">% %legend('1本目の名前','2本目の名前','Location','凡例の表示位置')</span></span><br><span class="line"><span class="comment">% set(legend,'FontSize',20);%フォントのサイズの変更</span></span><br><span class="line"></span><br><span class="line">axis([<span class="number">0</span> <span class="number">100</span> <span class="number">-2.5</span> <span class="number">2</span>]);        <span class="comment">%表示範囲の指定</span></span><br><span class="line"><span class="comment">%axis([x軸最小値　x軸最大値　y軸最小値　y軸最大値])</span></span><br><span class="line"></span><br><span class="line">saveas(gcf,<span class="string">'input.eps'</span>,<span class="string">'epsc'</span>)</span><br><span class="line">saveas(gcf,<span class="string">'input.emf'</span>,<span class="string">'meta'</span>)</span><br><span class="line">saveas(gcf,<span class="string">'input.jpg'</span>,<span class="string">'jpg'</span>)</span><br><span class="line"><span class="comment">%%</span></span><br><span class="line"><span class="comment">%k</span></span><br><span class="line"><span class="built_in">figure</span>(<span class="string">'Position'</span>,[<span class="number">0</span> S(<span class="number">4</span>)/<span class="number">3</span> <span class="number">1.618</span>*S(<span class="number">3</span>)/<span class="number">3</span> S(<span class="number">3</span>)/<span class="number">3</span>])   <span class="comment">%図のサイズ（縦横黄金比）、表示位置</span></span><br><span class="line">X=<span class="number">0</span>:sampletime:time;</span><br><span class="line">x=<span class="number">1</span>:<span class="number">1</span>:<span class="built_in">length</span>(X);</span><br><span class="line"></span><br><span class="line"><span class="built_in">plot</span>(X,k(<span class="number">2</span>,x),<span class="string">'b'</span>,<span class="string">'Linewidth'</span>,<span class="number">1.5</span>);  <span class="comment">%グラフの描写（Ecxelでいう散布図形式）</span></span><br><span class="line"><span class="comment">%plot(x軸の値 , y軸の値　, '線の色'　, 線の太さ)</span></span><br><span class="line"><span class="comment">%   1:A:Bの意味　１からBまでA個おき</span></span><br><span class="line"><span class="comment">%   'b--'の意味　青色の破線　（このほかには'b','r','k','g'など）</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">hold</span> on;    <span class="comment">%描写を保持（これをしないと次の描写で消えてしまう）</span></span><br><span class="line">grid on;    <span class="comment">%目盛りの表示 </span></span><br><span class="line"></span><br><span class="line">ylabel(<span class="string">'k(t)'</span>,<span class="string">'FontSize'</span>,<span class="number">20</span>) <span class="comment">%y軸のタイトル</span></span><br><span class="line">xlabel(<span class="string">'Time [sec]'</span>,<span class="string">'FontSize'</span>,<span class="number">20</span>)          <span class="comment">%x軸のタイトル</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">legend</span>(<span class="string">'\sly\rm(\slt\rm)'</span>,<span class="string">'\sly_&#123;m&#125;\rm(\slt\rm)'</span>,<span class="string">'Location'</span>,<span class="string">'northeast'</span>) <span class="comment">%凡例</span></span><br><span class="line"><span class="comment">% %legend('1本目の名前','2本目の名前','Location','凡例の表示位置')</span></span><br><span class="line"><span class="comment">% set(legend,'FontSize',20);%フォントのサイズの変更</span></span><br><span class="line"></span><br><span class="line">axis([<span class="number">0</span> <span class="number">100</span> <span class="number">0</span> <span class="number">2000</span>]);        <span class="comment">%表示範囲の指定</span></span><br><span class="line"><span class="comment">%axis([x軸最小値　x軸最大値　y軸最小値　y軸最大値])</span></span><br><span class="line"></span><br><span class="line">saveas(gcf,<span class="string">'k.eps'</span>,<span class="string">'epsc'</span>)</span><br><span class="line">saveas(gcf,<span class="string">'k.emf'</span>,<span class="string">'meta'</span>)</span><br><span class="line">saveas(gcf,<span class="string">'k.jpg'</span>,<span class="string">'jpg'</span>)</span><br><span class="line"><span class="comment">%%</span></span><br><span class="line"><span class="comment">%theta</span></span><br><span class="line"><span class="built_in">figure</span>(<span class="string">'Position'</span>,[<span class="number">0</span> S(<span class="number">4</span>)/<span class="number">3</span> <span class="number">1.618</span>*S(<span class="number">3</span>)/<span class="number">3</span> S(<span class="number">3</span>)/<span class="number">3</span>])   <span class="comment">%図のサイズ（縦横黄金比）、表示位置</span></span><br><span class="line">X=<span class="number">0</span>:sampletime:time;</span><br><span class="line">x=<span class="number">1</span>:<span class="number">1</span>:<span class="built_in">length</span>(X);</span><br><span class="line"></span><br><span class="line"><span class="built_in">plot</span>(X,theta(<span class="number">2</span>,x),<span class="string">'b'</span>,<span class="string">'Linewidth'</span>,<span class="number">1.5</span>);  <span class="comment">%グラフの描写（Ecxelでいう散布図形式）</span></span><br><span class="line"><span class="comment">%plot(x軸の値 , y軸の値　, '線の色'　, 線の太さ)</span></span><br><span class="line"><span class="comment">%   1:A:Bの意味　１からBまでA個おき</span></span><br><span class="line"><span class="comment">%   'b--'の意味　青色の破線　（このほかには'b','r','k','g'など）</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">hold</span> on;    <span class="comment">%描写を保持（これをしないと次の描写で消えてしまう）</span></span><br><span class="line">grid on;    <span class="comment">%目盛りの表示 </span></span><br><span class="line"></span><br><span class="line">ylabel(<span class="string">' \theta'</span>,<span class="string">'FontSize'</span>,<span class="number">20</span>) <span class="comment">%y軸のタイトル</span></span><br><span class="line">xlabel(<span class="string">'Time [sec]'</span>,<span class="string">'FontSize'</span>,<span class="number">20</span>)          <span class="comment">%x軸のタイトル</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">legend</span>(<span class="string">'\sly\rm(\slt\rm)'</span>,<span class="string">'\sly_&#123;m&#125;\rm(\slt\rm)'</span>,<span class="string">'Location'</span>,<span class="string">'northeast'</span>) <span class="comment">%凡例</span></span><br><span class="line"><span class="comment">% %legend('1本目の名前','2本目の名前','Location','凡例の表示位置')</span></span><br><span class="line"><span class="comment">% set(legend,'FontSize',20);%フォントのサイズの変更</span></span><br><span class="line"></span><br><span class="line">axis([<span class="number">0</span> <span class="number">100</span> <span class="number">-40</span> <span class="number">60</span>]);        <span class="comment">%表示範囲の指定</span></span><br><span class="line"><span class="comment">%axis([x軸最小値　x軸最大値　y軸最小値　y軸最大値])</span></span><br><span class="line"></span><br><span class="line">saveas(gcf,<span class="string">'theta.eps'</span>,<span class="string">'epsc'</span>)</span><br><span class="line">saveas(gcf,<span class="string">'theta.emf'</span>,<span class="string">'meta'</span>)</span><br><span class="line">saveas(gcf,<span class="string">'theta.jpg'</span>,<span class="string">'jpg'</span>)</span><br></pre></td></tr></table></figure><h1 id="Note"><a href="#Note" class="headerlink" title="Note"></a>Note</h1><ul><li><strong>*在simulation运行之后，同源文件夹内才会产生<code>To File</code>的<code>.mat</code>文件，这个时候才能运行导图m文件。</strong></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> Research </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Matlab </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Hexo模板自定义改进记录</title>
+      <link href="2020/03/21/Hexo200321-Hexo%E6%A8%A1%E6%9D%BF%E8%87%AA%E5%AE%9A%E4%B9%89%E6%94%B9%E8%BF%9B%E8%AE%B0%E5%BD%95/"/>
+      <url>2020/03/21/Hexo200321-Hexo%E6%A8%A1%E6%9D%BF%E8%87%AA%E5%AE%9A%E4%B9%89%E6%94%B9%E8%BF%9B%E8%AE%B0%E5%BD%95/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2020/03/21/Hexo200321-Hexo%E6%A8%A1%E6%9D%BF%E8%87%AA%E5%AE%9A%E4%B9%89%E6%94%B9%E8%BF%9B%E8%AE%B0%E5%BD%95/200321-7.jpg" alt="The First Title Picture"></p><a id="more"></a><p><strong>本文介绍自定义更改Hexo模板</strong></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Hexo </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Blog </tag>
+            
+            <tag> Hexo </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>在Linux上配置Autoware环境</title>
+      <link href="2020/03/18/Research200318-Install-Autoware-by-Docker/"/>
+      <url>2020/03/18/Research200318-Install-Autoware-by-Docker/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2020/03/18/Research200318-Install-Autoware-by-Docker/200318-1.jpg" alt="The First Title Picture"></p><a id="more"></a><p><strong>本文介绍用Docker安装Autoware</strong></p><h1 id="To-be-updating"><a href="#To-be-updating" class="headerlink" title="To be updating"></a>To be updating</h1>]]></content>
+      
+      
+      <categories>
+          
+          <category> Research </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Autonomous </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Hexo博客中图片的相对路径在线不显示问题</title>
+      <link href="2020/03/10/Hexo200310-%E5%8D%9A%E5%AE%A2%E4%B8%AD%E5%9B%BE%E7%89%87%E7%9A%84%E7%9B%B8%E5%AF%B9%E8%B7%AF%E5%BE%84%E5%9C%A8%E7%BA%BF%E4%B8%8D%E6%98%BE%E7%A4%BA%E9%97%AE%E9%A2%98/"/>
+      <url>2020/03/10/Hexo200310-%E5%8D%9A%E5%AE%A2%E4%B8%AD%E5%9B%BE%E7%89%87%E7%9A%84%E7%9B%B8%E5%AF%B9%E8%B7%AF%E5%BE%84%E5%9C%A8%E7%BA%BF%E4%B8%8D%E6%98%BE%E7%A4%BA%E9%97%AE%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2020/03/10/Hexo200310-%E5%8D%9A%E5%AE%A2%E4%B8%AD%E5%9B%BE%E7%89%87%E7%9A%84%E7%9B%B8%E5%AF%B9%E8%B7%AF%E5%BE%84%E5%9C%A8%E7%BA%BF%E4%B8%8D%E6%98%BE%E7%A4%BA%E9%97%AE%E9%A2%98/200310-1.jpg" alt="The First Title Picture"></p><a id="more"></a><p><strong>本文介绍Blog中图片引用问题</strong></p><h1 id="引用图片的几种方式"><a href="#引用图片的几种方式" class="headerlink" title="引用图片的几种方式"></a>引用图片的几种方式</h1><p><strong>a.直接通过网络链接图片，如下：</strong></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">![The First Title Picture](https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;yourusername&#x2F;yourrepository&#x2F;master&#x2F;hexo-0001.png &quot;Optional Title&quot;)</span><br></pre></td></tr></table></figure><p><strong>b.在线显示</strong></p><p>这种方式在hexo g之后会在线显示，但是不会编辑的时候实时显示图片</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">![The First Title Picture](.&#x2F;img.jpg)</span><br></pre></td></tr></table></figure><p><strong>c.实时显示</strong></p><p>这种方式会实时显示图片，但是不会在线生成图片</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">![The First Title Picture](your_article_folder&#x2F;img.jpg)</span><br></pre></td></tr></table></figure><h1 id="常见的图片引用问题"><a href="#常见的图片引用问题" class="headerlink" title="常见的图片引用问题"></a>常见的图片引用问题</h1><p>上面的b和c出现的问题，如何结合两者，使得图片实时显示的同时又可以在线实现，我们需要如下的插件：</p><p><code>hexo-asset-image</code></p><p><strong>安装</strong><br>可以参考<a href="https://github.com/xcodebuild/hexo-asset-image" target="_blank" rel="noopener">官方地址</a></p><p><code>npm install hexo-asset-image --save</code></p><p>然后就可以直接用上述c的方法进行引用图片，但是会出现如下的错误：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">update link as:--&gt;&#x2F;.io&#x2F;&#x2F;06&#x2F;01&#x2F;vim&#x2F;1561905818946.png</span><br><span class="line">update link as:--&gt;&#x2F;.io&#x2F;&#x2F;06&#x2F;01&#x2F;vim&#x2F;1561905818946.png</span><br></pre></td></tr></table></figure><p>即使hexo clean，问题还是依然存在</p><p><strong>原因是：</strong></p><blockquote><p>应该是hexo-asset-image这个插件的bug,hexo版本3.0以上获取网站url的方式与3.0以下有些不同，照着文章修改hexo.js的index.js就行，或者直接卸载hexo-asset-image，选择使用hexo 3.0方式的标签插件应该也可以</p></blockquote><p>所以我们需要在下载了插件之后，对插件中的一些配置文件进行修改，不然这个插件可能会出Bug</p><p><strong>打开/node_modules/hexo-asset-image/index.js，将内容更换为下面的代码</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">&#39;use strict&#39;;</span><br><span class="line">var cheerio &#x3D; require(&#39;cheerio&#39;);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; http:&#x2F;&#x2F;stackoverflow.com&#x2F;questions&#x2F;14480345&#x2F;how-to-get-the-nth-occurrence-in-a-string</span><br><span class="line">function getPosition(str, m, i) &#123;</span><br><span class="line">  return str.split(m, i).join(m).length;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var version &#x3D; String(hexo.version).split(&#39;.&#39;);</span><br><span class="line">hexo.extend.filter.register(&#39;after_post_render&#39;, function(data)&#123;</span><br><span class="line">  var config &#x3D; hexo.config;</span><br><span class="line">  if(config.post_asset_folder)&#123;</span><br><span class="line">    var link &#x3D; data.permalink;</span><br><span class="line">if(version.length &gt; 0 &amp;&amp; Number(version[0]) &#x3D;&#x3D; 3)</span><br><span class="line">   var beginPos &#x3D; getPosition(link, &#39;&#x2F;&#39;, 1) + 1;</span><br><span class="line">else</span><br><span class="line">   var beginPos &#x3D; getPosition(link, &#39;&#x2F;&#39;, 3) + 1;</span><br><span class="line">&#x2F;&#x2F; In hexo 3.1.1, the permalink of &quot;about&quot; page is like &quot;...&#x2F;about&#x2F;index.html&quot;.</span><br><span class="line">var endPos &#x3D; link.lastIndexOf(&#39;&#x2F;&#39;) + 1;</span><br><span class="line">    link &#x3D; link.substring(beginPos, endPos);</span><br><span class="line"></span><br><span class="line">    var toprocess &#x3D; [&#39;excerpt&#39;, &#39;more&#39;, &#39;content&#39;];</span><br><span class="line">    for(var i &#x3D; 0; i &lt; toprocess.length; i++)&#123;</span><br><span class="line">      var key &#x3D; toprocess[i];</span><br><span class="line"> </span><br><span class="line">      var $ &#x3D; cheerio.load(data[key], &#123;</span><br><span class="line">        ignoreWhitespace: false,</span><br><span class="line">        xmlMode: false,</span><br><span class="line">        lowerCaseTags: false,</span><br><span class="line">        decodeEntities: false</span><br><span class="line">      &#125;);</span><br><span class="line"></span><br><span class="line">      $(&#39;img&#39;).each(function()&#123;</span><br><span class="line">if ($(this).attr(&#39;src&#39;))&#123;</span><br><span class="line">&#x2F;&#x2F; For windows style path, we replace &#39;\&#39; to &#39;&#x2F;&#39;.</span><br><span class="line">var src &#x3D; $(this).attr(&#39;src&#39;).replace(&#39;\\&#39;, &#39;&#x2F;&#39;);</span><br><span class="line">if(!&#x2F;http[s]*.*|\&#x2F;\&#x2F;.*&#x2F;.test(src) &amp;&amp;</span><br><span class="line">   !&#x2F;^\s*\&#x2F;&#x2F;.test(src)) &#123;</span><br><span class="line">  &#x2F;&#x2F; For &quot;about&quot; page, the first part of &quot;src&quot; can&#39;t be removed.</span><br><span class="line">  &#x2F;&#x2F; In addition, to support multi-level local directory.</span><br><span class="line">  var linkArray &#x3D; link.split(&#39;&#x2F;&#39;).filter(function(elem)&#123;</span><br><span class="line">return elem !&#x3D; &#39;&#39;;</span><br><span class="line">  &#125;);</span><br><span class="line">  var srcArray &#x3D; src.split(&#39;&#x2F;&#39;).filter(function(elem)&#123;</span><br><span class="line">return elem !&#x3D; &#39;&#39; &amp;&amp; elem !&#x3D; &#39;.&#39;;</span><br><span class="line">  &#125;);</span><br><span class="line">  if(srcArray.length &gt; 1)</span><br><span class="line">srcArray.shift();</span><br><span class="line">  src &#x3D; srcArray.join(&#39;&#x2F;&#39;);</span><br><span class="line">  $(this).attr(&#39;src&#39;, config.root + link + src);</span><br><span class="line">  console.info&amp;&amp;console.info(&quot;update link as:--&gt;&quot;+config.root + link + src);</span><br><span class="line">&#125;</span><br><span class="line">&#125;else&#123;</span><br><span class="line">console.info&amp;&amp;console.info(&quot;no src attr, skipped...&quot;);</span><br><span class="line">console.info&amp;&amp;console.info($(this));</span><br><span class="line">&#125;</span><br><span class="line">      &#125;);</span><br><span class="line">      data[key] &#x3D; $.html();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p><p>最后不要忘记了<br><code>post_asset_folder: true</code></p><h1 id="PS"><a href="#PS" class="headerlink" title="PS"></a>PS</h1><p>最后可以参考<a href="https://blog.csdn.net/xjm850552586/article/details/84101345" target="_blank" rel="noopener">这篇文章</a>和<a href="https://segmentfault.com/q/1010000019625231/a-1020000019625326" target="_blank" rel="noopener">这篇文章</a>。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Hexo </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Blog </tag>
+            
+            <tag> Hexo </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>英语学习路线</title>
+      <link href="2020/03/05/Eng190808-%E8%8B%B1%E8%AF%AD%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/"/>
+      <url>2020/03/05/Eng190808-%E8%8B%B1%E8%AF%AD%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2020/03/05/Eng190808-%E8%8B%B1%E8%AF%AD%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/english-0002.png" alt="The First Title Picture" title="Optional Title"></p><a id="more"></a><p><strong>此文介绍English的学习路线</strong></p><h1 id="1"><a href="#1" class="headerlink" title="1"></a>1</h1><ol><li>to be continued</li></ol><h2 id="结束线"><a href="#结束线" class="headerlink" title="结束线"></a>结束线</h2>]]></content>
+      
+      
+      <categories>
+          
+          <category> English </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> English </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>LaTex入门手册</title>
+      <link href="2020/03/01/Mac200301-LaTex%E5%85%A5%E9%97%A8%E6%89%8B%E5%86%8C/"/>
+      <url>2020/03/01/Mac200301-LaTex%E5%85%A5%E9%97%A8%E6%89%8B%E5%86%8C/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2020/03/01/Mac200301-LaTex%E5%85%A5%E9%97%A8%E6%89%8B%E5%86%8C/200309-1.png" alt="The First Title Picture" title="Optional Title"></p><a id="more"></a><h1 id="1安装LaTex"><a href="#1安装LaTex" class="headerlink" title="1安装LaTex"></a>1安装LaTex</h1><p><strong>核心内容2歩</strong></p><ul><li>安装LaTex</li><li>部署Atom</li></ul><h2 id="1-1-安装LaTex"><a href="#1-1-安装LaTex" class="headerlink" title="1.1 安装LaTex"></a>1.1 安装LaTex</h2><ul><li>无论是Mac环境还是PC环境，都需要现在电脑上装好LaTex，具体操作步骤直接百度和谷歌会更加迅速，整个安装包自动下载，但是安装包比较大，花费时间会比较长。</li></ul><h2 id="1-2-部署Atom"><a href="#1-2-部署Atom" class="headerlink" title="1.2 部署Atom"></a>1.2 部署Atom</h2><p> 这一步主要就只是给Atom装三个Package，分别是：</p><ul><li>latex</li><li>language-latex</li><li>pdf-view</li></ul><p>如需更多配置信息，可以参考<a href="https://www.jianshu.com/p/b16fde27353b" target="_blank" rel="noopener">这里</a></p><h1 id="2-LaTex导入eps插图"><a href="#2-LaTex导入eps插图" class="headerlink" title="2 LaTex导入eps插图"></a>2 LaTex导入eps插图</h1><p>画图的方式有很多，这边用最简单的PPT中直接画图，PPT中自带的公式即可输入，操作简单方便。</p><h2 id="2-1-PPT打印出图"><a href="#2-1-PPT打印出图" class="headerlink" title="2.1 PPT打印出图"></a>2.1 PPT打印出图</h2><p>画完图，需要打印，这里需要安装一个打印eps的虚拟打印机。</p><p><img src="/2020/03/01/Mac200301-LaTex%E5%85%A5%E9%97%A8%E6%89%8B%E5%86%8C/200319-2.jpg" alt="The First Title Picture"></p><h2 id="2-2-调整边界"><a href="#2-2-调整边界" class="headerlink" title="2.2 调整边界"></a>2.2 调整边界</h2><p>打印出图之后的eps文件，边界是很大的，就是原文件的边界，所以我们需要裁减，使它沿着最小出图边界自动裁减。</p><h3 id="2-2-1-安装GSview"><a href="#2-2-1-安装GSview" class="headerlink" title="2.2.1 安装GSview"></a>2.2.1 安装GSview</h3><p><a href="http://pages.cs.wisc.edu/~ghost/" target="_blank" rel="noopener">下载地址</a></p><h3 id="2-2-2-裁减出图"><a href="#2-2-2-裁减出图" class="headerlink" title="2.2.2 裁减出图"></a>2.2.2 裁减出图</h3><p>打开之后直接修剪<br><img src="/2020/03/01/Mac200301-LaTex%E5%85%A5%E9%97%A8%E6%89%8B%E5%86%8C/200319-3.jpg" alt="The First Title Picture"><br>勾选自动裁减<br><img src="/2020/03/01/Mac200301-LaTex%E5%85%A5%E9%97%A8%E6%89%8B%E5%86%8C/200319-4.jpg" alt="The First Title Picture"></p><h2 id="2-3-Note"><a href="#2-3-Note" class="headerlink" title="2.3 Note"></a>2.3 Note</h2><ul><li><p><strong>虽然在ppt中可以安装IguanaTex插件，但是输入的公式有的时候会报错或者不显示的情况，所以还是直接用PPT自带的公式编辑器编辑公式更好一点。</strong></p></li><li><p><strong>虽然原则上是支持其他文件格式的图片插入的，但是支持最好的还是eps格式的图片 </strong></p></li></ul><h1 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h1><ul><li>在公式栏中是不可以随便空行的，会产生很多未知的错误</li><li>\hspace可以很好的调节公式之间的间距</li></ul><p>　　　　　　　</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Mac </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Latex </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>PC端部署Markdown环境</title>
+      <link href="2020/02/02/Mac200202-PC%E7%AB%AF%E9%83%A8%E7%BD%B2Markdown%E7%8E%AF%E5%A2%83/"/>
+      <url>2020/02/02/Mac200202-PC%E7%AB%AF%E9%83%A8%E7%BD%B2Markdown%E7%8E%AF%E5%A2%83/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2020/02/02/Mac200202-PC%E7%AB%AF%E9%83%A8%E7%BD%B2Markdown%E7%8E%AF%E5%A2%83/200303-1.jpg" alt="The First Title Picture"></p><a id="more"></a><p>本文介绍在PC端部署Markdown的环境</p><h1 id="编辑器的选择"><a href="#编辑器的选择" class="headerlink" title="编辑器的选择"></a>编辑器的选择</h1><ul><li>Typora 是一个相对而言多平台且小且口碑都不错的编辑器，但是我个人无法习惯这种直接就显示内容的编辑器，相对而言，更习惯双栏显示的编辑器。</li><li>CmdMarkdown 但是她更类似于在线同步的那种编辑器，所以放弃。</li><li>Mweb 在在PC端没有客户端，所以没办法用。</li><li>VScode 最终还是选择了开源的编辑器，然后加插件来解决编辑问题。</li></ul><h2 id="VSCode部署环境"><a href="#VSCode部署环境" class="headerlink" title="VSCode部署环境"></a>VSCode部署环境</h2><ul><li><p>1.Markdown All in One </p></li><li><p>2.Markdown Preview Enhanced 这个插件的主要是一个很好用的完善预览功能的插件，可以更加形象的展示所编写的pdf格式的文档样式。在插件库中搜索markdown即可找到该插件，然后点击安装后重新加载。</p></li><li><p>3.如需更多配置信息，可以参考<a href="https://www.jianshu.com/p/9f13e971fe6b" target="_blank" rel="noopener">这里</a>。</p></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> Mac </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Markdown </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>群晖实现对exfat格式的识别</title>
+      <link href="2019/11/11/Nas191111-%E7%BE%A4%E6%99%96%E5%AE%9E%E7%8E%B0%E5%AF%B9exfat%E6%A0%BC%E5%BC%8F%E7%9A%84%E8%AF%86%E5%88%AB/"/>
+      <url>2019/11/11/Nas191111-%E7%BE%A4%E6%99%96%E5%AE%9E%E7%8E%B0%E5%AF%B9exfat%E6%A0%BC%E5%BC%8F%E7%9A%84%E8%AF%86%E5%88%AB/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2019/11/11/Nas191111-%E7%BE%A4%E6%99%96%E5%AE%9E%E7%8E%B0%E5%AF%B9exfat%E6%A0%BC%E5%BC%8F%E7%9A%84%E8%AF%86%E5%88%AB/200303-1.png" alt="The First Title Picture" title="Optional Title"></p><a id="more"></a><p><strong>本文介绍让群晖NAS系统DSM支持exfat文件格式</strong></p><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>因为exfat是微软的专利格式，商业应用要交版权费用，所以群晖DSM系统都不支持exfat文件格式的读写。随着存储卡的越做越大，而一般大容量又有的时候在macOS系统和PC端都要用，那么往往都是用exfat格式保存的。这个时候要用NAS来直接备份存储卡，这就行不通了，必须先导入电脑，然后再通过电脑传到NAS上面，但是如果你的局域网路由器不是千兆级别的，那么传输速度基本就停留在了10M/s的速度，动辄几十上百G的文件，这得传到什么时候，所以必须得直接插在NAS上进行传输。</p><p>在DSM 6.0版本以后，群晖官方的确提供了一个新的<code>exFAT access</code>加值套件，可以支持exfat格式的读写。不但要花$3.99美金单独购买，而且只限在一台NAS上使用。不同的NAS或者重新安装系统以后，就不能用了。</p><p>但是群晖本身就是一个Linux系统，Ubuntu可以支持exfat格式，原理应该类似。借用Ubuntu的deb安装包<code>exfat-fuse</code>是可以实现的。网上有网友在<code>DSM 5.0</code>系统<code>DSM 6.0</code>系统上都能实现。以下为方法。</p><h1 id="免责声明"><a href="#免责声明" class="headerlink" title="免责声明"></a>免责声明</h1><p>这个方法并不是官方提供的，需要使用到一些简单的Linux命令，不熟悉的话，存在有一定风险。所以，请谨慎尝试，风险自担！</p><h1 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h1><h2 id="1-启动SSH功能"><a href="#1-启动SSH功能" class="headerlink" title="1.启动SSH功能"></a>1.启动SSH功能</h2><p>开启群晖的ssh的功能<br><img src="/2019/11/11/Nas191111-%E7%BE%A4%E6%99%96%E5%AE%9E%E7%8E%B0%E5%AF%B9exfat%E6%A0%BC%E5%BC%8F%E7%9A%84%E8%AF%86%E5%88%AB/200303-4.png" alt title="Optional Title"></p><h2 id="2-激活root用户"><a href="#2-激活root用户" class="headerlink" title="2.激活root用户"></a>2.激活root用户</h2><p>先用管理员账户登陆ssh，激活root用户，退出后切换成root用户。<br>管理员账号登陆，按提示输入密码：<br><code>ssh admin@192.168.1.100</code><br>添加root用户，密码自己决定：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo su -</span><br><span class="line">synouser --setpw root your_new_root_password</span><br><span class="line">exit</span><br></pre></td></tr></table></figure><br>用root用户登陆ssh：<br><code>ssh root@192.168.1.100</code></p><h2 id="3-下载对应的exfat-fuse"><a href="#3-下载对应的exfat-fuse" class="headerlink" title="3.下载对应的exfat-fuse"></a>3.下载对应的exfat-fuse</h2><p>由于DSM 5.0是32bit操作系统，而DSM 6.0是64bit，它们需要的安装包是不一样的，下面分开说明。</p><p>DSM 5.0安装方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget -P &#x2F;tmp&#x2F; http:&#x2F;&#x2F;mirrors.kernel.org&#x2F;ubuntu&#x2F;pool&#x2F;universe&#x2F;f&#x2F;fuse-exfat&#x2F;exfat-fuse_1.2.3-1_i386.deb</span><br><span class="line">dpkg -x &#x2F;tmp&#x2F;exfat-fuse_1.2.3-1_i386.deb &#x2F;tmp&#x2F;exfat-fuse&#x2F;</span><br><span class="line">cp &#x2F;tmp&#x2F;exfat-fuse&#x2F;sbin&#x2F;mount.exfat-fuse &#x2F;usr&#x2F;bin&#x2F;</span><br></pre></td></tr></table></figure><br>DSM 6.0安装方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget -P &#x2F;tmp&#x2F; http:&#x2F;&#x2F;mirrors.kernel.org&#x2F;ubuntu&#x2F;pool&#x2F;universe&#x2F;f&#x2F;fuse-exfat&#x2F;exfat-fuse_1.2.3-1_amd64.deb</span><br><span class="line">dpkg -x &#x2F;tmp&#x2F;exfat-fuse_1.2.3-1_amd64.deb &#x2F;tmp&#x2F;exfat-fuse&#x2F;</span><br><span class="line">cp &#x2F;tmp&#x2F;exfat-fuse&#x2F;sbin&#x2F;mount.exfat-fuse &#x2F;usr&#x2F;bin&#x2F;</span><br></pre></td></tr></table></figure></p><h2 id="4-建立共享文件夹"><a href="#4-建立共享文件夹" class="headerlink" title="4.建立共享文件夹"></a>4.建立共享文件夹</h2><p>登陆NAS界面，在存储空间1增加一个共享文件夹，例如：<code>usbexfat</code><br>增加共享文件夹<code>usbexfat</code><br><img src="/2019/11/11/Nas191111-%E7%BE%A4%E6%99%96%E5%AE%9E%E7%8E%B0%E5%AF%B9exfat%E6%A0%BC%E5%BC%8F%E7%9A%84%E8%AF%86%E5%88%AB/200303-5.jpg" alt title="Optional Title"></p><h2 id="5-查看磁盘信息"><a href="#5-查看磁盘信息" class="headerlink" title="5.查看磁盘信息"></a>5.查看磁盘信息</h2><p>插入exfat格式的U盘或者读卡器，然后回到ssh，查看磁盘信息：<br><code>fdisk -l</code><br>DSM 5.0下面的信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Device Boot Start End Sectors Size Id Type</span><br><span class="line">&#x2F;dev&#x2F;sdu1 256 7823654 7823399 3.7G 7 HPFS&#x2F;NTFS</span><br></pre></td></tr></table></figure><br>DSM 6.0下面的信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Device Boot Start End Sectors Size Id Type</span><br><span class="line">&#x2F;dev&#x2F;sdu1 256 7823654 7823399 3.7G 7 HPFS&#x2F;NTFS&#x2F;exFAT</span><br></pre></td></tr></table></figure><br>以上信息根据具体自己的电脑信息等会不一样，大家可以根据自己的实际情况自己进行设置<br><img src="/2019/11/11/Nas191111-%E7%BE%A4%E6%99%96%E5%AE%9E%E7%8E%B0%E5%AF%B9exfat%E6%A0%BC%E5%BC%8F%E7%9A%84%E8%AF%86%E5%88%AB/200303-2.png" alt title="Optional Title"></p><h2 id="6-手工挂载exfat分区"><a href="#6-手工挂载exfat分区" class="headerlink" title="6.手工挂载exfat分区"></a>6.手工挂载exfat分区</h2><p>由于设备不同，<code>/dev/sdq2</code>这个分区可能不同，需要按照实际情况改成自己系统对应的。<br><code>mount.exfat-fuse /dev/sdq2 /volume1/usbexfat -o nonempty</code><br><img src="/2019/11/11/Nas191111-%E7%BE%A4%E6%99%96%E5%AE%9E%E7%8E%B0%E5%AF%B9exfat%E6%A0%BC%E5%BC%8F%E7%9A%84%E8%AF%86%E5%88%AB/200303-3.png" alt title="Optional Title"></p><h2 id="7-成功访问"><a href="#7-成功访问" class="headerlink" title="7.成功访问"></a>7.成功访问</h2><p>不出问题的话，现在通过共享文件夹usbexfat，愉快的访问内容。</p><h2 id="8-文件处理"><a href="#8-文件处理" class="headerlink" title="8.文件处理"></a>8.文件处理</h2><p>搞这么久可不止是为了让文件能在NAS系统中可以显现，虽然你现在已经可以直接在NAS的usbexfat文件夹中查看你的移动设备的内容，但是亲测，当你直接拷贝文件到其他NAS文件夹的时候，比远程拷贝更慢，我感觉可能是因为一边从nas拷贝到你的电脑主机，再从电脑主机拷贝到你的NAS，这个操作实在是太骚了，得不偿失。于是我尝试了直接用Linux系统的命令行就行拷贝操作，证明用命令行的操作会快非常多，虽然不能直接看到拷贝速度，但是亲测50G的文件夹也就几分钟的事。<br><img src="/2019/11/11/Nas191111-%E7%BE%A4%E6%99%96%E5%AE%9E%E7%8E%B0%E5%AF%B9exfat%E6%A0%BC%E5%BC%8F%E7%9A%84%E8%AF%86%E5%88%AB/200303-6.png" alt title="Optional Title"><br><strong>注意以上图片中的拷贝模式</strong></p><p><strong>这个也同样适用于在NAS系统中不同共享文件夹之间的文件处理，如果直接在电脑端进行操作，操作的逻辑就是先复制到电脑端，再复制到NAS端，这样的操作逻辑虽然可视化，但是对于大文件夹来说简直就是得不偿失，所以直接以用户名形式进入Linux系统，然后再进行相应的文件操作，速度快到飞起。</strong></p><p><strong>另外，cp命令对于大文件还是很慢，但是mv命令基本就是瞬间完成。</strong></p><h2 id="9-用完后，可以手工卸载exfat分区："><a href="#9-用完后，可以手工卸载exfat分区：" class="headerlink" title="9.用完后，可以手工卸载exfat分区："></a>9.用完后，可以手工卸载exfat分区：</h2><p><code>umount /volume1/usbexfat</code></p><h2 id="10-弹出设备"><a href="#10-弹出设备" class="headerlink" title="10.弹出设备"></a>10.弹出设备</h2><p><code>eject -F /dev/sdu1</code></p><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>目前的方法，有以下的优缺点：</p><h2 id="优点："><a href="#优点：" class="headerlink" title="优点："></a>优点：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">完全免费！省去了购买$3.99美金的加值套件——虽然折合20多元并不是很贵，能省一点是一点。</span><br><span class="line">DSM 5.0和6.0都支持，不分黑群白群，而且安装数量的限制——自己任性安装，想装几台就装几台。</span><br></pre></td></tr></table></figure><h2 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">读取exfat格式支持度较好，但不建议写入！</span><br><span class="line">写入后，再插到电脑上用，会提示卡有错误，需要扫描一次来修复。</span><br><span class="line">使用exfat主要是备份存储卡的数据，所以尽量不要在NAS里面写入数据。</span><br><span class="line">需要手工挂载和卸载exfat分区，略显麻烦，不过这个也是有解决办法的。</span><br></pre></td></tr></table></figure><h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p>1.<a href="https://xpenology.com/forum/topic/6715-exfat-for-dsm-50-amp-dsm-60/" target="_blank" rel="noopener">参考1</a></p><p>2.<a href="https://github.com/luckylz2git/exfat-synology" target="_blank" rel="noopener">参考2</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Nas </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Nas </tag>
+            
+            <tag> Synology </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>很喜欢的一句话</title>
+      <link href="2019/01/01/Blog190101-Life-Goals/"/>
+      <url>2019/01/01/Blog190101-Life-Goals/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2019/01/01/Blog190101-Life-Goals/190101-1.png" alt="The First Title Picture" title="Optional Title"><br><strong>人生最理想的状态</strong><br><a id="more"></a></p><p>“我的家里有三面墙，一面墙全是书，另一面墙全是电影和音乐的碟，最后一面墙全是旅行的车票。”<br>丰盛的人生不过如此，2019与君共勉。​　　​　　　　　　　　　　　　　​　　​　　　　　　　　　　</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Blog </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Blog </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Numpy快速入门</title>
+      <link href="2018/12/12/Py181212-Numpy%E5%85%A5%E9%97%A8/"/>
+      <url>2018/12/12/Py181212-Numpy%E5%85%A5%E9%97%A8/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2018/12/12/Py181212-Numpy%E5%85%A5%E9%97%A8/181212-1.jpg" alt="The First Title Picture"></p><a id="more"></a><p><strong>本文将以代码的形式快速介绍Numpy的基本用法</strong></p><h3 id="本文主要内容："><a href="#本文主要内容：" class="headerlink" title="本文主要内容："></a><font color="#1E90FF"><center>本文主要内容：</center></font></h3><hr><ul><li>创建array</li><li>Numpy基本运算</li><li>Numpy索引</li><li>array的合并</li><li>array的分割</li><li>copy和deepcopy</li></ul><h2 id="Talk-is-cheap-Show-me-the-code"><a href="#Talk-is-cheap-Show-me-the-code" class="headerlink" title=" Talk is cheap. Show me the code"></a><font color="#1E90FF"><center> Talk is cheap. Show me the code</center></font></h2><p><img src="/2018/12/12/Py181212-Numpy%E5%85%A5%E9%97%A8/181212-2.png" alt="The First Title Picture" title="Numpy"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Python </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Python3 </tag>
+            
+            <tag> Python2 </tag>
+            
+            <tag> Numpy </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>为你的GitHub博客设置专属域名</title>
+      <link href="2018/10/10/Hexo181010-%E4%B8%BA%E4%BD%A0%E7%9A%84GitHub%E5%8D%9A%E5%AE%A2%E8%AE%BE%E7%BD%AE%E4%B8%93%E5%B1%9E%E5%9F%9F%E5%90%8D/"/>
+      <url>2018/10/10/Hexo181010-%E4%B8%BA%E4%BD%A0%E7%9A%84GitHub%E5%8D%9A%E5%AE%A2%E8%AE%BE%E7%BD%AE%E4%B8%93%E5%B1%9E%E5%9F%9F%E5%90%8D/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2018/10/10/Hexo181010-%E4%B8%BA%E4%BD%A0%E7%9A%84GitHub%E5%8D%9A%E5%AE%A2%E8%AE%BE%E7%BD%AE%E4%B8%93%E5%B1%9E%E5%9F%9F%E5%90%8D/hexo-0004.png" alt="The First Title Picture" title="Optional Title"></p><a id="more"></a><p><strong>本文介绍为你的GitHub博客设置专属域名</strong></p><p>在为你的GitHub博客设置专属域名的前提是你已经用GitHub打造了你的个人博客，如果还没有，可以参考上一篇文章。</p><p>为你的GitHub博客设置专属域名主要分为以下几步：</p><h2 id="1-域名购买与解析"><a href="#1-域名购买与解析" class="headerlink" title="1 域名购买与解析"></a>1 域名购买与解析</h2><p>首先你要申请一个域名，因为毕竟xxx.github.io这个一长串的网址不好记，关于域名申请的话这里还是推荐<a href="https://wanwang.aliyun.com/" target="_blank" rel="noopener">万网</a>，查找你想申请域名，如果没有被占用，购买就可以了。</p><p>购买域名完成，进入万网的管理控制台：</p><p><img src="/2018/10/10/Hexo181010-%E4%B8%BA%E4%BD%A0%E7%9A%84GitHub%E5%8D%9A%E5%AE%A2%E8%AE%BE%E7%BD%AE%E4%B8%93%E5%B1%9E%E5%9F%9F%E5%90%8D/hexo-0005.png" alt="1" title="Optional Title"></p><p>找到你已经购买的域名，点击解析，进入如下页面：</p><p><img src="/2018/10/10/Hexo181010-%E4%B8%BA%E4%BD%A0%E7%9A%84GitHub%E5%8D%9A%E5%AE%A2%E8%AE%BE%E7%BD%AE%E4%B8%93%E5%B1%9E%E5%9F%9F%E5%90%8D/hexo-0006.png" alt="1" title="Optional Title"></p><p>点击添加解析，注意这里必须按照图中标注的添加这三条，2个A和一个www。</p><p><code>这里需要注意的是有些域名是需要你在万网进行实名认证的，不然就算这里显示解析成功，万网也不会给你提供解析服务，所以还是有必要进行一下实名认证</code></p><p>ok，设置完成解析之后，还不能直接访问域名就能跳转到我们的Github页面。</p><p>我们只差最后一步。</p><h2 id="2-创建CNAME"><a href="#2-创建CNAME" class="headerlink" title="2 创建CNAME"></a>2 创建CNAME</h2><p>只差一个CNAME文件，这个文件需要创建在我们的本地仓库主目录中的source目录下，可以通过各种方法创建一个没有后缀的名叫CNAME的文件，如果不会，可以参考下面的命令行来创建：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ cd source/     <span class="comment"># 命令行进入source目录中</span></span><br><span class="line">$ touch CNAME    <span class="comment">#命令行创建一个叫CNAME的文件</span></span><br><span class="line">$ vim CNAME      <span class="comment">#用VIM打开刚刚创建的CNAME文件，并输入你的域名</span></span><br><span class="line">$ git add CNAME  <span class="comment">#这一步及以下两步是把更改内容推送至在线的GitHub中</span></span><br><span class="line">$ git commit -m <span class="string">"add CNAME"</span></span><br><span class="line">$ git push</span><br></pre></td></tr></table></figure><br>到这里，不出意外你就已经可以通过你的域名访问了你的博客了，而你的博客也已经有了个性的专属域名。</p><p>ok，到这里你已经学会了如何通过你购买的域名与Github pages结合，即通过你购买的域名访问你的个人站点了。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Hexo </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Hexo </tag>
+            
+            <tag> Git </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Mac安装软件提示文件损坏如何解决</title>
+      <link href="2018/09/30/Mac180930-Mac%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6%E6%8F%90%E7%A4%BA%E6%96%87%E4%BB%B6%E6%8D%9F%E5%9D%8F/"/>
+      <url>2018/09/30/Mac180930-Mac%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6%E6%8F%90%E7%A4%BA%E6%96%87%E4%BB%B6%E6%8D%9F%E5%9D%8F/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2018/09/30/Mac180930-Mac%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6%E6%8F%90%E7%A4%BA%E6%96%87%E4%BB%B6%E6%8D%9F%E5%9D%8F/mac-0020.png" alt="The First Title Picture" title="Optional Title"><br><strong>本文将介绍在Mac上安装软件时提示文件损坏如何解决</strong><br><a id="more"></a></p><h1 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h1><p>Mac安装软件提示<strong>文件损坏</strong>怎么处理,打开DMG文件提示损坏怎么处理,来自不信任的开发者怎么处理,macOS High Sierra如何安装<strong>任何来源的文件</strong></p><h1 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h1><p>一般来说都不是软件包坏了，如果是macOS High Sierra之前的版本只要在系统的<strong>”安全性与隐私”</strong>中打开”任何来源”这个选项即可。</p><p>而Mac用户在macOS High Sierra最新版本的系统后,系统中的”安全性与隐私”中没有”任何来源”这个选项.没有“任何来源”这个选项会直接导致很多从非Apple Store下载的软件包在安装的时候会<strong>提示软件包来自不安全的开发者或者直接提示软件包损坏无法安装</strong>，话不多说，直接上解决办法：</p><p>1.打开电脑的终端<br>2.输入以下命令:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo spctl --master-disable</span><br></pre></td></tr></table></figure><br>输入你系统密码，回车<br>3.然后打开“安全性与隐私”,这里已经出现”任何来源”了，勾选之后就可以安装很多软件包</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Mac </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Mac </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>配置你的Terminal终端</title>
+      <link href="2018/09/18/Mac180918-%E9%85%8D%E7%BD%AE%E4%BD%A0%E7%9A%84Terminal%E7%BB%88%E7%AB%AF/"/>
+      <url>2018/09/18/Mac180918-%E9%85%8D%E7%BD%AE%E4%BD%A0%E7%9A%84Terminal%E7%BB%88%E7%AB%AF/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2018/09/18/Mac180918-%E9%85%8D%E7%BD%AE%E4%BD%A0%E7%9A%84Terminal%E7%BB%88%E7%AB%AF/180918-1.jpg" alt="The First Title Picture" title="Optional Title"><br><strong>本文将介绍在Mac环境下用powerline配置你的Terminal终端</strong></p><a id="more"></a><h1 id="Powerline-是什么"><a href="#Powerline-是什么" class="headerlink" title="Powerline 是什么"></a>Powerline 是什么</h1><p>Powerline是一个stateless status line，即一个全局状态/提示栏。你可以为你的bash,Terminal,iTerm2,VIM配置上powerline，然后就会变成这样：</p><p>你的Mac终端提示栏将会是这样的：<br><img src="/2018/09/18/Mac180918-%E9%85%8D%E7%BD%AE%E4%BD%A0%E7%9A%84Terminal%E7%BB%88%E7%AB%AF/mac-0007.png" alt="配置图" title="Optional Title"><br>你的VIM状态栏会是这样的：<br><img src="/2018/09/18/Mac180918-%E9%85%8D%E7%BD%AE%E4%BD%A0%E7%9A%84Terminal%E7%BB%88%E7%AB%AF/mac-0008.png" alt="配置图" title="Optional Title"><br>正所谓磨刀不误砍柴工，为你的工作环境配置一个好看的状态栏，极大的提高了工作效率。</p><h1 id="Mac上安装Powerline"><a href="#Mac上安装Powerline" class="headerlink" title="Mac上安装Powerline"></a>Mac上安装Powerline</h1><p>因为Powerline项目下涵盖了适配各种APP(bash，vim等)的代码，所以你可以在Mac任何一个地方下载该代码包，然后在不同的APP中配置这个路径，以Plugin形式加载。本文暂时介绍配置Mac的默认Terminal的方法。</p><p>对于Mac的环境，确保Python版本大于等于2.7，如果不是，可以通过homebrew安装，这里不做赘述。也可以一步到位安装Python3，至少这是未来的趋势。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">shell&gt; python -v</span><br><span class="line">Python 2.7.9</span><br></pre></td></tr></table></figure><br>在确保环境之后，通过pip安装Powerline：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shell&gt; pip install powerline-status</span><br></pre></td></tr></table></figure><br>安装完成后通过pip show powerline-status查看powerline所在的具体路径。</p><p>注意：这里的路径很重要，会用在之后的配置环节<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">shell&gt; pip show powerline-status</span><br><span class="line">Name: powerline-status</span><br><span class="line">Version: 2.6</span><br><span class="line">Summary: The ultimate statusline&#x2F;prompt utility.</span><br><span class="line">Home-page: https:&#x2F;&#x2F;github.com&#x2F;powerline&#x2F;powerline</span><br><span class="line">Author: Kim Silkebaekken</span><br><span class="line">Author-email: kim.silkebaekken+vim@gmail.com</span><br><span class="line">License: MIT</span><br><span class="line">Location: &#x2F;Users&#x2F;lib&#x2F;python3.6&#x2F;site-packages</span><br><span class="line">Requires:</span><br></pre></td></tr></table></figure></p><h1 id="配置Bash使用powerline"><a href="#配置Bash使用powerline" class="headerlink" title="配置Bash使用powerline"></a>配置Bash使用powerline</h1><p>配置方法很简单，只需要找到你Mac的Bash配置文件位置(例如：/etc/bashrc，~/.bashrc，~/.bash_profile)，然后在其中增加一行调用安装路径下的bindings/bash/powerline.sh即可。这样每次调用生成新的Bash窗口时，都会自动执行powerline.sh文件中的内容。下面以~/.bash_profile为例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">shell&gt; echo &lt;&lt; EOF &gt;&gt; ~&#x2F;.bash_profile </span><br><span class="line">. &#x2F;Library&#x2F;Python&#x2F;2.7&#x2F;site-packages&#x2F;powerline&#x2F;bindings&#x2F;bash&#x2F;powerline.sh</span><br><span class="line">EOF  </span><br><span class="line">shell&gt; . &#x2F;Library&#x2F;Python&#x2F;2.7&#x2F;site-packages&#x2F;powerline&#x2F;bindings&#x2F;bash&#x2F;powerline.sh</span><br></pre></td></tr></table></figure><br>注意：根据python安装方式的不同，你的powerline所在路径也可能不同。请根据实际情况修改上面的命令。</p><h1 id="Teriminal字体配置"><a href="#Teriminal字体配置" class="headerlink" title="Teriminal字体配置"></a>Teriminal字体配置</h1><p>执行完上面的步骤后，不出意外powerline就开始工作了。打开你的终端，你会发现提示符是一些乱码，出现这样情况的原因是powerline为了美观自己造了一些符号，而这些符号不在Unicode字库内（如果你不知道Unicode字库是什么的话可以看下博主以前的相关介绍）。所以想要powerline正常显示的话，需要安装特殊处理过的字体。好在有一位热心人的帮助，他把大部分的程序猿常用的等宽字体都打上了powerline patch使得我们的这部配置将异常简单。首先我们从github上下载并安装字体：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">shell&gt; git clone https:&#x2F;&#x2F;github.com&#x2F;powerline&#x2F;fonts.git</span><br><span class="line">shell&gt; cd fonts</span><br><span class="line">shell&gt; .&#x2F;install.sh</span><br></pre></td></tr></table></figure><br>安装完成后我们就可以在iTerm2或者Terminal的字体选项里看到并选择多个xxx for powerline的字体了。*注意：对于ASCII fonts和non-ASCII fonts都需要选择for powerline的字体。如下图：<br><img src="/2018/09/18/Mac180918-%E9%85%8D%E7%BD%AE%E4%BD%A0%E7%9A%84Terminal%E7%BB%88%E7%AB%AF/mac-0009.png" alt="配置图" title="Optional Title"></p><p>至此就应该全部配置好了。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Mac </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Mac </tag>
+            
+            <tag> Terminal </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>配置你的Sublime Text</title>
+      <link href="2018/08/22/Mac180822-%E9%85%8D%E7%BD%AE%E4%BD%A0%E7%9A%84Sublime-Text/"/>
+      <url>2018/08/22/Mac180822-%E9%85%8D%E7%BD%AE%E4%BD%A0%E7%9A%84Sublime-Text/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2018/08/22/Mac180822-%E9%85%8D%E7%BD%AE%E4%BD%A0%E7%9A%84Sublime-Text/mac-0003.png" alt="The First Title Picture" title="Optional Title"><br><strong>本文介绍在Mac上配置Sublime Text</strong><br><a id="more"></a></p><h1 id="1-下载Sublime-Text"><a href="#1-下载Sublime-Text" class="headerlink" title="1 下载Sublime Text"></a>1 下载Sublime Text</h1><p>去官网下载Sublime Text<a href="https://www.sublimetext.com/3" target="_blank" rel="noopener">官网</a></p><h1 id="2-注册"><a href="#2-注册" class="headerlink" title="2 注册"></a>2 注册</h1><p>输入注册码：</p><p>注册码可以在搜索引擎直接搜索，搜最近的结果就行。</p><p>将搜索到的注册码复制粘贴到软件的输入框里，按回车，提示成功，这时就可以使用了</p><p>注意：安装SublimeText3时，不会自动弹出来让你输入注册码。点击上面的Help－－－Enter License进行输入.</p><h1 id="3-安装插件Package-Control"><a href="#3-安装插件Package-Control" class="headerlink" title="3 安装插件Package Control"></a>3 安装插件Package Control</h1><p>这个工具可以来安装后面需要的所有插件。打开已经安装好的 Sublime Text 3，然后点击顶部菜单的 View -&gt; Show Console（或者使用快捷键 command + ` ）。</p><p>在下面的输入框里复制下面的代码</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import urllib.request,os,hashlib; h &#x3D; &#39;2915d1851351e5ee549c20394736b442&#39; + &#39;8bc59f460fa1548d1514676163dafc88&#39;; pf &#x3D; &#39;Package Control.sublime-package&#39;; ipp &#x3D; sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by &#x3D; urllib.request.urlopen( &#39;http:&#x2F;&#x2F;packagecontrol.io&#x2F;&#39; + pf.replace(&#39; &#39;, &#39;%20&#39;)).read(); dh &#x3D; hashlib.sha256(by).hexdigest(); print(&#39;Error validating download (got %s instead of %s), please try manual install&#39; % (dh, h)) if dh !&#x3D; h else open(os.path.join( ipp, pf), &#39;wb&#39; ).write(by)</span><br></pre></td></tr></table></figure><p>如下图：<br><img src="/2018/08/22/Mac180822-%E9%85%8D%E7%BD%AE%E4%BD%A0%E7%9A%84Sublime-Text/mac-0016.png" alt="1" title="Optional Title"><br>紧接着，查看是否已经安装成功<br><img src="/2018/08/22/Mac180822-%E9%85%8D%E7%BD%AE%E4%BD%A0%E7%9A%84Sublime-Text/mac-0017.png" alt="1" title="Optional Title"><br>接下来是插件安装</p><p>通过快捷键<code>Command + Shift + P</code>  打开 <code>Package Control</code> 来安装插件。在打开的输入框中输入 <code>install</code>，会根据输入状态自动提示，用鼠标点击或键盘回车选择 Install Package 进入查找安装界面：</p><p>等待几秒钟后，在新弹出的输入框里，输入你想要安装的插件名称：<br><img src="/2018/08/22/Mac180822-%E9%85%8D%E7%BD%AE%E4%BD%A0%E7%9A%84Sublime-Text/mac-0018.png" alt="1" title="Optional Title"><br>用鼠标点击或键盘回车选择后，等待一段时间即可安装成功。所有的插件都存放在下面这个文件目录里，每个插件都有独立的文件夹：</p><p><code>/Users/你的Username/Library/Application Support/Sublime Text 3/Packages</code></p><p>等待几秒钟后，在新弹出的输入框里，输入你想要安装的插件名称：<br><img src="/2018/08/22/Mac180822-%E9%85%8D%E7%BD%AE%E4%BD%A0%E7%9A%84Sublime-Text/mac-0019.png" alt="1" title="Optional Title"><br>这个根据你的需要下载相应的插件</p><h1 id="4-用命令行打开Sublime"><a href="#4-用命令行打开Sublime" class="headerlink" title="4 用命令行打开Sublime"></a>4 用命令行打开Sublime</h1><p>到上一步已经把Sublime基本配置好了，但是如果经常用命令行的话还不能直接用命令行打开Sublime，所以需要进行这一步</p><p>在你的终端文件里，加上：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alias subl&#x3D;\&#39;&#39;&#x2F;Applications&#x2F;Sublime Text 2.app&#x2F;Contents&#x2F;SharedSupport&#x2F;bin&#x2F;subl&#39;\&#39;</span><br></pre></td></tr></table></figure><br>一般终端文件就是 ~/.bashrc 或者是 ~/.bash_profile<br>如果是Sublime Text 3 的用户，可以把路径中的 /Sublime Text 2.app/ 改成 /Sublime Text.app/ 就可以了。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Mac </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Sublime Text </tag>
+            
+            <tag> Mac </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>在Mac搭建你的虚拟机Ubuntu</title>
+      <link href="2018/07/09/Mac180709-%E5%9C%A8Mac%E6%90%AD%E5%BB%BA%E4%BD%A0%E7%9A%84%E8%99%9A%E6%8B%9F%E6%9C%BAUbuntu/"/>
+      <url>2018/07/09/Mac180709-%E5%9C%A8Mac%E6%90%AD%E5%BB%BA%E4%BD%A0%E7%9A%84%E8%99%9A%E6%8B%9F%E6%9C%BAUbuntu/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2018/07/09/Mac180709-%E5%9C%A8Mac%E6%90%AD%E5%BB%BA%E4%BD%A0%E7%9A%84%E8%99%9A%E6%8B%9F%E6%9C%BAUbuntu/mac-0006.png" alt="The First Title Picture" title="Optional Title"><br><strong>本文会介绍如何在Mac上利用VMware Fusion虚拟机安装Ubuntu系统</strong><br><a id="more"></a></p><h1 id="1-在Mac上安装VMware-Fusion虚拟机"><a href="#1-在Mac上安装VMware-Fusion虚拟机" class="headerlink" title="1 在Mac上安装VMware Fusion虚拟机"></a>1 在Mac上安装VMware Fusion虚拟机</h1><p>1.下载VMware fusion for Mac，直接去<a href="https://www.vmware.com/products/fusion/fusion-evaluation.html" target="_blank" rel="noopener">官网</a>下载即可。</p><p>2.然后安装VMware Fusion，一路下一步就可以。<br><img src="/2018/07/09/Mac180709-%E5%9C%A8Mac%E6%90%AD%E5%BB%BA%E4%BD%A0%E7%9A%84%E8%99%9A%E6%8B%9F%E6%9C%BAUbuntu/mac-0010.png" alt="配置图" title="Optional Title"><br>3.输入注册码，注册码上网搜索一下最新的即可。<br><img src="/2018/07/09/Mac180709-%E5%9C%A8Mac%E6%90%AD%E5%BB%BA%E4%BD%A0%E7%9A%84%E8%99%9A%E6%8B%9F%E6%9C%BAUbuntu/mac-0011.png" alt="配置图" title="Optional Title"><br>4.最后完成即可。</p><h1 id="2-安装Ubuntu"><a href="#2-安装Ubuntu" class="headerlink" title="2 安装Ubuntu"></a>2 安装Ubuntu</h1><p>1.在网上下载ISO镜像，安全点就直接去官网下载</p><p>2.镜像下载好之后就按下图的顺序操作</p><p><img src="/2018/07/09/Mac180709-%E5%9C%A8Mac%E6%90%AD%E5%BB%BA%E4%BD%A0%E7%9A%84%E8%99%9A%E6%8B%9F%E6%9C%BAUbuntu/mac-0012.png" alt="配置图" title="Optional Title"></p><p><img src="/2018/07/09/Mac180709-%E5%9C%A8Mac%E6%90%AD%E5%BB%BA%E4%BD%A0%E7%9A%84%E8%99%9A%E6%8B%9F%E6%9C%BAUbuntu/mac-0013.png" alt="配置图" title="Optional Title"></p><p><img src="/2018/07/09/Mac180709-%E5%9C%A8Mac%E6%90%AD%E5%BB%BA%E4%BD%A0%E7%9A%84%E8%99%9A%E6%8B%9F%E6%9C%BAUbuntu/mac-0014.png" alt="配置图" title="Optional Title"></p><p>3.基本到这里就已经全部配置好了，但是还存在不能全屏等问题，需要安装VMware Tools<br><img src="/2018/07/09/Mac180709-%E5%9C%A8Mac%E6%90%AD%E5%BB%BA%E4%BD%A0%E7%9A%84%E8%99%9A%E6%8B%9F%E6%9C%BAUbuntu/mac-0015.png" alt="配置图" title="Optional Title"></p><p>4.完成Ubuntu搭建</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Mac </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Mac </tag>
+            
+            <tag> Ubuntu </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>机器学习学习路线</title>
+      <link href="2018/06/12/Py180612-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/"/>
+      <url>2018/06/12/Py180612-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2018/06/12/Py180612-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/180612-1.png" alt="The First Title Picture"></p><a id="more"></a><p><strong>给学习机器学习没有思路的你</strong></p><p>这里推荐莫凡同学的学习路线值得大家学习<br><img src="/2018/06/12/Py180612-%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/180612-2.png" alt></p><p>​      </p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Python </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Machine Learning </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>用Vutrl+Shadowsocks来科学上网</title>
+      <link href="2018/05/20/Mac180520-%E7%94%A8Vutrl-Shadowsocks%E6%9D%A5%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/"/>
+      <url>2018/05/20/Mac180520-%E7%94%A8Vutrl-Shadowsocks%E6%9D%A5%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2018/05/20/Mac180520-%E7%94%A8Vutrl-Shadowsocks%E6%9D%A5%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/google-0002.png" alt="The First Title Picture" title="Optional Title"><br><strong>本文将介绍在Mac环境下搭建VPS服务器来科学上网</strong><br><a id="more"></a></p><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>曾经也用过蓝灯，鱼摆摆等科学工具来实现科学上网，后来渐渐的要不就是失效，要不就是价格偏高，而且作为一个爱折腾的人，这些实在是不得劲，稳定性很差，既然都是通过海外服务器来实现，那还不如自己直接整一个来的干脆利落，而且稳定性和速度都6得飞起，首先在这里得声明，天下没有免费的午餐，优质的服务器还是得花费一定的费用，如果你只是用来搭建科学上网环境，那么你也可以通过共享给小伙伴或者其他方式来分摊你的压力。本文主要介绍利用Vutrl和Shadowsocks配合搭建科学上网环境。</p><h1 id="1-科普"><a href="#1-科普" class="headerlink" title="1 科普"></a>1 科普</h1><p>这部分介绍一些搭建过程中涉及到的背景知识：</p><h2 id="1-1-什么是-Shadowsocks"><a href="#1-1-什么是-Shadowsocks" class="headerlink" title="1.1 什么是 Shadowsocks"></a>1.1 什么是 Shadowsocks</h2><p>shadowsocks的工作原理<br><img src="/2018/05/20/Mac180520-%E7%94%A8Vutrl-Shadowsocks%E6%9D%A5%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/google-0003.png" alt="1" title="Optional Title"><br>Shadowsocks(ss) 是由 <a href="https://github.com/Clowwindy" target="_blank" rel="noopener">Clowwindy</a>开发的一款用来加密传输资料的软件，不过也正因为它加密传输资料的特性，使得 GFW 无法区分它所传输的资料。</p><h2 id="1-2-什么是-VPS-和-Vultr"><a href="#1-2-什么是-VPS-和-Vultr" class="headerlink" title="1.2 什么是 VPS 和 Vultr"></a>1.2 什么是 VPS 和 Vultr</h2><p>VPS (Virtual private server) 译作虚拟专用伺服器。你可以理解为是云端的一台远程电脑，你可以给它安装操作系统、软件，并通过一些工具连接和远程操控它。<br><a href="https://www.vultr.com/" target="_blank" rel="noopener">Vultr</a> 是一家 VPS 服务器提供商，有美国、亚洲、欧洲等多地的 VPS。它家的服务器以性价比高闻名，按时间计费，最低的资费为每月2.5美刀，不过现在已经脱销了，最低只有5美刀的了。<br><img src="/2018/05/20/Mac180520-%E7%94%A8Vutrl-Shadowsocks%E6%9D%A5%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/google-0004.png" alt="1" title="Optional Title"><br>比 Vultr 价格更低的服务商也有许多，比如<a href="https://bandwagonhost.com/" target="_blank" rel="noopener">搬瓦工</a>，和 V 家差不多的配置只要19.9美刀每年,但是夜间的速度实在慢的感人。</p><h2 id="1-3-什么是-Linux-和-SSH"><a href="#1-3-什么是-Linux-和-SSH" class="headerlink" title="1.3 什么是 Linux 和 SSH"></a>1.3 什么是 Linux 和 SSH</h2><p>Linux 是免费开源的操作系统，大概被世界上过半服务器所采用。有大量优秀的开源软件可以安装，上述 Shadowsocks 就是其一。你可以通过命令行而不仅仅是通过图形界面来给 Linux 操作系统「下命令」，比如进入一个文件夹。<br>而 SSH 是一种网络协议，作为每一台 Linux 电脑的标准配置，用于计算机之间的加密登录。当你为租用的 VPS 安装 Linux 系统后，只要借助一些工具，就可以用 SSH 在你自己的 Mac/PC 电脑上远程登录该 VPS 了。</p><h1 id="2-购买和连接-VPS"><a href="#2-购买和连接-VPS" class="headerlink" title="2 购买和连接 VPS"></a>2 购买和连接 VPS</h1><h2 id="2-1-注册-Vultr-和部署-VPS"><a href="#2-1-注册-Vultr-和部署-VPS" class="headerlink" title="2.1 注册 Vultr 和部署 VPS"></a>2.1 注册 Vultr 和部署 VPS</h2><p>访问 <a href="https://www.vultr.com/" target="_blank" rel="noopener">Vultr.com</a> 注册帐号，然后按下图进行部署心得服务器。<br><img src="/2018/05/20/Mac180520-%E7%94%A8Vutrl-Shadowsocks%E6%9D%A5%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/google-0005.png" alt="1" title="Optional Title"></p><h2 id="2-2-连接-VPS"><a href="#2-2-连接-VPS" class="headerlink" title="2.2 连接 VPS"></a>2.2 连接 VPS</h2><p>找到你刚刚买的VPS的配置信息,最关键的就是IP地址和密码<br><img src="/2018/05/20/Mac180520-%E7%94%A8Vutrl-Shadowsocks%E6%9D%A5%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/google-0006.png" alt="1" title="Optional Title"><br>打开你的Mac终端，输入：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh root@&lt;Your IP&gt;</span><br></pre></td></tr></table></figure><p>然后按照提示去你的VPS那复制密码过来黏贴就行（需要注意的是linux中密码是不会显示出来的，所以你只要按回车键就可以了）<br>当出现下面的代码时，说明已成功登录。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@vultr ~]#</span><br></pre></td></tr></table></figure></p><h1 id="3-部署-Shadowsocks"><a href="#3-部署-Shadowsocks" class="headerlink" title="3 部署 Shadowsocks"></a>3 部署 Shadowsocks</h1><p>Shadowsocks 需要同时具备客户端和服务器端，所以它的部署也需要分两步。</p><h2 id="3-1-部署-Shadowsocks-服务器端"><a href="#3-1-部署-Shadowsocks-服务器端" class="headerlink" title="3.1 部署 Shadowsocks 服务器端"></a>3.1 部署 Shadowsocks 服务器端</h2><p>这里使用 <a href="https://teddysun.com/342.html" target="_blank" rel="noopener">teddysun</a> 的一键安装脚本,依次执行下面3条命令，每次输入一行、回车，等待屏幕上的操作完成后再输入下一条。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget --no-check-certificate https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;teddysun&#x2F;shadowsocks_install&#x2F;master&#x2F;shadowsocks.sh</span><br></pre></td></tr></table></figure><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod +x shadowsocks.sh</span><br></pre></td></tr></table></figure><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;shadowsocks.sh 2&gt;&amp;1 | tee shadowsocks.log</span><br></pre></td></tr></table></figure><br>第三步输完，依次为你的 Shadowsocks 服务设置一个密码和端口（端口输入1-65535 间的数字就ok），然后你就只需要等你的Shadowsocks 的配置信息显示出来，其中你的IP地址，密码，端口和加密方式都很重要，截图保存。</p><h2 id="3-2-安装-Shadowsocks-客户端"><a href="#3-2-安装-Shadowsocks-客户端" class="headerlink" title="3.2 安装 Shadowsocks 客户端"></a>3.2 安装 Shadowsocks 客户端</h2><p>在你需要科学上网的设备上面安装相对应的客户端，这个Mac的下载Mac客户端，Windows下载PC版本的客户端，手机就找相应支持的APP就行，这里就自己动手找合适的版本就行。<br>一般都是打开客户端，在「服务器设定」里新增服务器。然后依次填入刚才截图的服务器 IP、服务器端口、你设的密码和加密方式。<br>新增服务器<br>然后启用代理，到这里你就已经可以科学上网了。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Mac </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Vutrl </tag>
+            
+            <tag> Shadowsocks </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>用Hexo + Github Pages搭建你的个人博客</title>
+      <link href="2018/04/18/Hexo180418-%E7%94%A8Hexo-Github-Pages%E6%90%AD%E5%BB%BA%E4%BD%A0%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"/>
+      <url>2018/04/18/Hexo180418-%E7%94%A8Hexo-Github-Pages%E6%90%AD%E5%BB%BA%E4%BD%A0%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2018/04/18/Hexo180418-%E7%94%A8Hexo-Github-Pages%E6%90%AD%E5%BB%BA%E4%BD%A0%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/hexo-0002.png" alt="The First Title Picture" title="Optional Title"></p><a id="more"></a><p><strong>本文介绍使用Hexo + Github Pages搭建个人独立博客</strong></p><h1 id="1-写在最前面"><a href="#1-写在最前面" class="headerlink" title="1 写在最前面"></a>1 写在最前面</h1><p>Blog可能已经过了最火热的时代，特别是现在又要自己折腾一个个人的独立博客，反反复复，停停走走，最后还是下了决心决定自己搭建一个博客。</p><p>之所以想要建立一个自己的个人博客，想让自己在写博客的过程又有新的收获。</p><p><a href="https://zhuanlan.zhihu.com/p/19743861?columnSlug=cnfeat" target="_blank" rel="noopener">出处</a></p><p><strong>“提高将事情讲清楚的能力” </strong></p><blockquote><p align="left">在写博客之前你需要花更多的时间来表达出你的想法，表达你想法之前你得先对你要表达的东西充分理解并理清思路和逻辑。很多东西你以为懂了，但当你在写下来的时候，你就觉得无从下手了。</p></blockquote><p><strong>分享带来的连锁反应</strong></p><blockquote><p align="left">“通过分享，你获得了直接而快速的回报，你最终或许会发现你已将版权和“保留所有权利”抛诸脑后。新的经济学准则是：参与你作品的人越多，回报越高。在分享主义里，如果你愿意你可以保留所有权，但是我乐于分享。” by 毛向辉 《分享主义：一场思维革命》</p></blockquote><p><strong>记录成长</strong></p><blockquote><p align="left">我们每个人都应该有这样的经历:隔了很久我们回头看看以前的自己会发现特别傻x,但正是因为这些傻x的岁月让我们不断成长,你在成长的过程中不断的修正自己的错误。</p></blockquote><p><strong>探索未知的世界</strong></p><blockquote><p align="left">世界不止是你的家，你的公司，你的朋友圈，你应该去发现一个更大的世界，通过写博客，你会知道世界上还有很多人像你一样在写博客，这些人和知识正在世界的某个角落在等着你。</p></blockquote><p><strong>帮助更多想要获取帮助的人</strong></p><blockquote><p align="left">这点我相信大家由为感触,在你探索一个未知的知识领域的时候,往往被撞的一鼻子灰.幸运的人很快就能找到一个“师傅”或一篇很好的文章,但大多数往往在找“教程”的过程中就已经放弃了.因为他们没能够找到刚好理解的文章.</p></blockquote><h1 id="2-系统环境配置"><a href="#2-系统环境配置" class="headerlink" title="2 系统环境配置"></a>2 系统环境配置</h1><p>要使用Hexo，就需要在系统中安装Nodejs以及Git。<br><strong><a href="https://nodejs.org/en/download/" target="_blank" rel="noopener">安装Nodejs</a></strong><br><strong><a href="https://git-scm.com/download/" target="_blank" rel="noopener">安装Git</a></strong><br>**安装Hexo<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~/hexo</span><br><span class="line">$ npm install hexo-cli -g</span><br><span class="line">$ hexo init blog</span><br><span class="line">$ cd blog</span><br><span class="line">$ npm install</span><br><span class="line">$ hexo g <span class="comment"># 或者hexo generate</span></span><br><span class="line">$ hexo s <span class="comment"># 或者hexo server，可以在http://localhost:4000/ 查看</span></span><br></pre></td></tr></table></figure><br>这里有必要提下Hexo常用的几个命令：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo generate (hexo g)<span class="comment">#生成静态文件，会在当前目录下生成一个新的叫做public的文件夹</span></span><br><span class="line">hexo server (hexo s) <span class="comment">#启动本地web服务，用于博客的预览</span></span><br><span class="line">hexo deploy (hexo d) <span class="comment">#部署播客到远端（比如github, heroku等平台）</span></span><br></pre></td></tr></table></figure><br>另外还有其他几个常用命令：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"postName"</span> <span class="comment">#新建文章</span></span><br><span class="line">$ hexo new page <span class="string">"pageName"</span> <span class="comment">#新建页面</span></span><br></pre></td></tr></table></figure><br>常用简写<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ hexo n == hexo new</span><br><span class="line">$ hexo g == hexo generate</span><br><span class="line">$ hexo s == hexo server</span><br><span class="line">$ hexo d == hexo deploy</span><br></pre></td></tr></table></figure><br>常用组合<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ hexo d -g <span class="comment">#生成部署</span></span><br><span class="line">$ hexo s -g <span class="comment">#生成预览</span></span><br></pre></td></tr></table></figure><br>现在我们打开<a href="http://localhost:4000/" target="_blank" rel="noopener">http://localhost:4000/</a> 已经可以看到一篇内置的blog了。</p><p>目前我安装所用的本地环境如下：(通过hexo -v查看)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">hexo: 3.5.0</span><br><span class="line">hexo-cli: 1.0.4</span><br><span class="line">os: Darwin 17.3.0 darwin x64</span><br><span class="line">http_parser: 2.7.0</span><br><span class="line">node: 8.9.4</span><br><span class="line">v8: 6.1.534.50</span><br><span class="line">uv: 1.15.0</span><br><span class="line">zlib: 1.2.11</span><br><span class="line">ares: 1.10.1-DEV</span><br><span class="line">modules: 57</span><br><span class="line">nghttp2: 1.25.0</span><br><span class="line">openssl: 1.0.2n</span><br><span class="line">icu: 59.1</span><br><span class="line">unicode: 9.0</span><br><span class="line">cldr: 31.0.1</span><br><span class="line">tz: 2017b</span><br></pre></td></tr></table></figure></p><h1 id="3-Hexo主题设置"><a href="#3-Hexo主题设置" class="headerlink" title="3 Hexo主题设置"></a>3 Hexo主题设置</h1><p>这里以主题light为例进行说明。</p><p>安装主题<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ hexo clean</span><br><span class="line">$ git clone git clone git://github.com/tommy351/hexo-theme-light.git themes/light</span><br></pre></td></tr></table></figure><br>启用主题<br>修改Hexo目录下的_config.yml配置文件中的theme属性，将其设置为light。</p><p>更新主题<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ cd themes/light</span><br><span class="line">$ git pull</span><br><span class="line">$ hexo g <span class="comment"># 生成</span></span><br><span class="line">$ hexo s <span class="comment"># 启动本地web服务器</span></span><br></pre></td></tr></table></figure><br>现在打开<a href="http://localhost:4000/" target="_blank" rel="noopener">http://localhost:4000/</a> ，会看到我们已经应用了一个新的主题。</p><h1 id="4-Github-Pages设置"><a href="#4-Github-Pages设置" class="headerlink" title="4 Github Pages设置"></a>4 Github Pages设置</h1><p>GitHub Pages 本用于介绍托管在GitHub的项目，不过，由于他的空间免费稳定，用来做搭建一个博客再好不过了。</p><p>每个帐号只能有一个仓库来存放个人主页，而且仓库的名字必须是username/username.github.io，这是特殊的命名约定。你可以通过<a href="http://username.github.io" target="_blank" rel="noopener">http://username.github.io</a> 来访问你的个人主页。(这里特别提醒一下，需要注意的个人主页的网站内容是在master分支下的。)</p><p>创建自己的Github Pages<br>注册GitHub及使用Github Pages的过程不做赘述，创建之后创建一个github repo叫做 xxx(your username).github.io. 创建完成之后，需要有一次提交(git commit)操作，然后就可以通过链接<a href="http://xxx(your" target="_blank" rel="noopener">http://xxx(your</a> username).github.io/ 访问了。</p><h1 id="5-部署Hexo到Github-Pages"><a href="#5-部署Hexo到Github-Pages" class="headerlink" title="5 部署Hexo到Github Pages"></a>5 部署Hexo到Github Pages</h1><p>有了上一步的基础，这一步是将我们本地的web部署到github上，然后就可以通过<a href="http://xxx(your" target="_blank" rel="noopener">http://xxx(your</a> username).github.io/ 直接访问了。</p><p>首先需要明白所谓部署到github的原理。</p><p>之前步骤中在Github上创建的那个特别的repo（xxx(your username).github.io）一个最大的特点就是其master中的html静态文件，可以通过链接<a href="http://xxx(your" target="_blank" rel="noopener">http://xxx(your</a> username).github.io来直接访问。</p><p>Hexo -g 会生成一个静态网站（第一次会生成一个public目录），这个静态文件可以直接访问。</p><p>需要将hexo生成的静态网站，提交(git commit)到github上。</p><p>明白了原理，怎么做自然就清晰了。</p><p>可以参考下面的图片：<br><img src="/2018/04/18/Hexo180418-%E7%94%A8Hexo-Github-Pages%E6%90%AD%E5%BB%BA%E4%BD%A0%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/hexo-0003.png" alt title="Optional Title"></p><p>如果还不明白，可以自己做做功课补习一下。</p><p>使用hexo deploy部署<br>hexo deploy可以部署到很多平台，具体可以参考这个<a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">链接</a>. 如果部署到github，需要在配置文件_config.xml中作如下修改：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: git@github.com:xxx(your username).github.io.git</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure><br>然后在命令行中执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo d</span><br></pre></td></tr></table></figure><br>即可完成部署。</p><p>要能成功部署，需要提前安装一个扩展：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure></p><p>使用git命令行部署<br>使用hexo depoly确实很方便，但是有的时候会出现一些bug，所以个人还是更喜欢直接用Git命令来完成部署。</p><p>clone github repo 进入你的blog文件夹，然后clone你的GitHub repo<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git clone https:&#x2F;&#x2F;github.com&#x2F;xxx&#x2F;xxx(your username).github.io.git .deploy&#x2F;xxx(your username).github.io</span><br></pre></td></tr></table></figure><br>上一行代码的意思是将我们之前创建的repo克隆到本地的一个叫做.deploy的新建的文件夹用于存放克隆的代码。</p><p>将下面的代码直接封装成sh，每次需要部署的时候直接bash执行就行。</p><p>具体每行代码的意思见注释。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cp -R public/* .deploy/xxx(your username).github.io</span><br><span class="line"><span class="comment">#这一行是复制blog下面的public中的网页代码到我们Git的本地文件夹</span></span><br><span class="line">cd .deploy/xxx(your username).github.io</span><br><span class="line"><span class="comment">#进入这个本地的Git文件夹</span></span><br><span class="line">git add .</span><br><span class="line"><span class="comment">#加载此文件夹下面所有的文件</span></span><br><span class="line">git commit -m “update”</span><br><span class="line"><span class="comment">#提交代码</span></span><br><span class="line">git push </span><br><span class="line"><span class="comment">#push到GitHub上</span></span><br></pre></td></tr></table></figure></p><p>到这里你的个人博客基本框架搭建起来了，这里根据你自己所选的主题配置的不同，你的个性化设置也可以不一样，有很多的配置，现在不熟悉也没有关系，可以慢慢的摸索，后面我还会分享一些个人搭建过程中的小小心得经验。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Hexo </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Blog </tag>
+            
+            <tag> Hexo </tag>
+            
+            <tag> Git </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>数据结构和算法测试文件</title>
+      <link href="2018/04/03/Data200808-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6/"/>
+      <url>2018/04/03/Data200808-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2018/04/03/Data200808-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6/180403-1.jpg" alt="The First Title Picture" title="Optional Title"></p><a id="more"></a><p>本文介绍日语的学习路线</p><h1 id="To-Be-Updating"><a href="#To-Be-Updating" class="headerlink" title="To Be Updating"></a>To Be Updating</h1>]]></content>
+      
+      
+      <categories>
+          
+          <category> Data </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Data </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Cpp测试文件</title>
+      <link href="2018/04/03/Cpp200505-Cpp%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6/"/>
+      <url>2018/04/03/Cpp200505-Cpp%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2018/04/03/Cpp200505-Cpp%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6/180403-1.jpg" alt="The First Title Picture" title="Optional Title"></p><a id="more"></a><p>本文介绍日语的学习路线</p><h1 id="To-Be-Updating"><a href="#To-Be-Updating" class="headerlink" title="To Be Updating"></a>To Be Updating</h1>]]></content>
+      
+      
+      <categories>
+          
+          <category> Cpp </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Cpp </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>日语的学习路线</title>
+      <link href="2018/04/03/Jap180403-%E6%97%A5%E8%AF%AD%E7%9A%84%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/"/>
+      <url>2018/04/03/Jap180403-%E6%97%A5%E8%AF%AD%E7%9A%84%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2018/04/03/Jap180403-%E6%97%A5%E8%AF%AD%E7%9A%84%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/180403-1.jpg" alt="The First Title Picture" title="Optional Title"></p><a id="more"></a><p>本文介绍日语的学习路线</p><h1 id="To-Be-Updating"><a href="#To-Be-Updating" class="headerlink" title="To Be Updating"></a>To Be Updating</h1>]]></content>
+      
+      
+      <categories>
+          
+          <category> Japanese </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Japanese </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Mac配置Python3最简单的方法</title>
+      <link href="2018/03/14/Mac180314-Mac%E9%85%8D%E7%BD%AEPython3%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84%E6%96%B9%E6%B3%95/"/>
+      <url>2018/03/14/Mac180314-Mac%E9%85%8D%E7%BD%AEPython3%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84%E6%96%B9%E6%B3%95/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2018/03/14/Mac180314-Mac%E9%85%8D%E7%BD%AEPython3%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84%E6%96%B9%E6%B3%95/mac-0002.png" alt="The First Title Picture" title="Optional Title"></p><p><strong>此文介绍Mac用Anaconda配置Python3</strong><br><a id="more"></a></p><h1 id="达成效果"><a href="#达成效果" class="headerlink" title="达成效果"></a>达成效果</h1><p>能让你目前只装有Python2的Mac装上Python3，同时拥有很多科学计算库</p><h1 id="anaconda介绍"><a href="#anaconda介绍" class="headerlink" title="anaconda介绍"></a>anaconda介绍</h1><p>anaconda 是一个python的发行版，包括了python和很多常见的软件库, 和一个包管理器conda。常见的科学计算类的库都包含在里面了，使得安装比常规python安装要容易。<br>装了anaconda就不需要装python了。</p><h1 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h1><p>1.下载</p><p>首先去<a href="https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/" target="_blank" rel="noopener">清华大学开源软件镜像站</a>找到你Mac的版本进行下载，根据你的喜好安装有界面的版本或者命令行版本，然后直接安装即可</p><p>2.确认安装结果</p><p>安装完成后，在终端测试一下安装结果</p><p>输入python或ipython等命令，如果看到相应的结果，说明安装成功</p><p>3.修改包管理镜像源</p><p>安装成功之后，修改其包管理镜像为国内源</p><p>在终端中分别运行下面的2个命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">conda config --add channels https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;anaconda&#x2F;pkgs&#x2F;free&#x2F;</span><br><span class="line">conda config --set show_channel_urls yes</span><br></pre></td></tr></table></figure></p><p>设置镜像的目的，是因为原生的镜像在国外，在配置下载的时候可能会很慢，国内的镜像速度就很快</p><p>基本上到这一步，你的Mac就已经配置好了基本的Python3环境</p><p>然后你还想折腾着换着用Python2什么的话就看第4步</p><p>4.添加Python2</p><p>在终端输入以下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda create -n py27 python&#x3D;2.7</span><br></pre></td></tr></table></figure><br>其中py27是新添加环境的名字，可以自定义修改。</p><p>之后通过activate py27和deactivate py27命令激活、退出该环境。（Linux和OS系统的命令似乎是source activate和source deactivate）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">activate py27</span><br></pre></td></tr></table></figure></p><hr>]]></content>
+      
+      
+      <categories>
+          
+          <category> Mac </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Python3 </tag>
+            
+            <tag> Python2 </tag>
+            
+            <tag> MacBook </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Python如何入门</title>
+      <link href="2018/02/11/Py180211-Python%E5%A6%82%E4%BD%95%E5%85%A5%E9%97%A8/"/>
+      <url>2018/02/11/Py180211-Python%E5%A6%82%E4%BD%95%E5%85%A5%E9%97%A8/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2018/02/11/Py180211-Python%E5%A6%82%E4%BD%95%E5%85%A5%E9%97%A8/180211-1.jpg" alt="The First Title Picture"></p><a id="more"></a><p><strong>本文列举最基本的Python语法来给你做入门的自我检测</strong></p><p><strong>入门Python，从敲出你的第一个hello world开始，但是往往学着枯燥的语法，慢慢的就不了了之，就像你立志要刷完一本英语单词本，到最后却还是只记得abandon一样，但其实无论是学任何语言，比如英语，还是学计算机语言，比如Python，都是躲不过语法的，语法是框架，是规则，有了框架的基础上才会渐渐地有血有肉，我自认为学习英语语法的好方法是自己多动手写英语文章，用更多的句式，这样自然而言语法就能烂熟于心，当然延伸到学习Python，也是一样，最好的方法自然是你需要什么，如果你都不知道你要拿Python来做什么，那么这样学习起来是很枯燥的，自然这也会导致最后你的学习之旅半路就停下了，比如我当时学习Python的第一个小项目就是写了一个爬虫，爬了一个网站所有的我需要的信息，在这个过程中用到了Python的很多种语法，这个正反馈的过程中，不但你能受到激励不容易放弃，你也会对各种语法知识更加的印象深刻。</strong></p><p><strong>这篇博文，我会列举一些最最基本的Python语法的问题，作为你想学习Python的一个自我检测吧，如果这些你都知道了，那么其实你已经是入门了Python了。</strong></p><hr><h1 id="1-关于标识符、关键字"><a href="#1-关于标识符、关键字" class="headerlink" title="1. 关于标识符、关键字"></a>1. 关于标识符、关键字</h1><ul><li>什么是标识符及标识符的命名规则</li><li>列举不少于十种关键字<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>/<span class="keyword">else</span>/<span class="keyword">elif</span>/<span class="keyword">break</span>/<span class="keyword">continue</span>/<span class="keyword">for</span>/<span class="keyword">while</span>/<span class="keyword">and</span>/<span class="keyword">or</span>/<span class="keyword">not</span>/<span class="keyword">in</span>/<span class="literal">True</span>/<span class="literal">False</span>/<span class="keyword">try</span>/<span class="keyword">except</span>/<span class="keyword">finally</span>/<span class="keyword">as</span>/<span class="keyword">import</span>/<span class="keyword">from</span>/<span class="function"><span class="keyword">def</span>/<span class="title">class</span>/<span class="title">return</span>/<span class="title">None</span>/<span class="title">global</span>/<span class="title">lambda</span></span></span><br></pre></td></tr></table></figure></li><li>如何知道所有的关键字<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> keyword</span><br><span class="line">keyword.kwlist</span><br></pre></td></tr></table></figure></li></ul><p>​    </p><h1 id="2-关于变量、输入、输出"><a href="#2-关于变量、输入、输出" class="headerlink" title="2. 关于变量、输入、输出"></a>2. 关于变量、输入、输出</h1><ul><li>什么是变量，变量的本质是存储还是<strong>引用</strong></li><li>如何交换两个变量的值</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="number">4</span></span><br><span class="line">b = <span class="number">5</span></span><br><span class="line"></span><br><span class="line">c = a   <span class="comment">#交换两个变量的第1种方法</span></span><br><span class="line">a = b</span><br><span class="line">b = c</span><br><span class="line"></span><br><span class="line">a = a+b   <span class="comment">#交换两个变量的第2种方法</span></span><br><span class="line">b = a-b</span><br><span class="line">a = a-b</span><br><span class="line"></span><br><span class="line">a,b = b,a  <span class="comment">#交换两个变量的第3种方法</span></span><br></pre></td></tr></table></figure><ul><li>python3的输入注意</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">a = input()    <span class="comment">#python2</span></span><br><span class="line"><span class="comment">#3+4-----&gt;a = 7 #number</span></span><br><span class="line">raw_input()</span><br><span class="line">a = input()    <span class="comment">#python3</span></span><br><span class="line"><span class="comment">#3+4 ----&gt;a = "3+4" #str</span></span><br></pre></td></tr></table></figure><ul><li>对于各种数据类型的转换<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#100---&gt;a = "100"</span></span><br><span class="line">int("100")---&gt;100</span><br><span class="line">str(100)----&gt;"100"</span><br><span class="line">33670---&gt;str(33670)---&gt;"33670"---&gt;len("33670")---&gt;5</span><br></pre></td></tr></table></figure></li></ul><h1 id="3-字符串、列表、元组、字典、集合、列表生成式、类型转换"><a href="#3-字符串、列表、元组、字典、集合、列表生成式、类型转换" class="headerlink" title="3. 字符串、列表、元组、字典、集合、列表生成式、类型转换"></a>3. 字符串、列表、元组、字典、集合、列表生成式、类型转换</h1><ul><li>什么是字符串，切片，怎么倒转字符串<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="string">"abcd"</span></span><br><span class="line">a[:3]----&gt;"abc"</span><br><span class="line">a[::-1]----&gt;"dcba"</span><br></pre></td></tr></table></figure></li><li>列表的增删改查</li><li>元组的只读</li><li>字典与集合</li><li>什么时候用列表，什么时候用字典，字典的key需要不可变类型，不可哈希</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[1,2,3,1,1,1]---&gt;增删改查</span><br><span class="line"></span><br><span class="line">(1,2,3,1,1,1)--&gt;只读</span><br><span class="line"></span><br><span class="line">&#123;1,2,3,1,1,1&#125;----&gt;&#123;1,2,3&#125; 集合---元素不重复</span><br><span class="line"></span><br><span class="line">字典----&gt;&#123;key:value, key2:value&#125;</span><br><span class="line"></span><br><span class="line">[<span class="string">"aa"</span>,<span class="string">"ddd"</span>]</span><br><span class="line"></span><br><span class="line">&#123;<span class="string">"name"</span>:<span class="string">"asdf"</span>,<span class="string">"age"</span>:<span class="number">10</span>&#125;</span><br><span class="line"></span><br><span class="line">[&#123;<span class="string">"name"</span>:<span class="string">"xxx"</span>,<span class="string">"family"</span>:[&#123;<span class="string">"小姑"</span>:<span class="string">"aa"</span>,<span class="string">"family"</span>:[<span class="string">"a"</span>,<span class="string">"b"</span>,<span class="string">"cc"</span>]&#125;,<span class="string">"bb"</span>,<span class="string">"ccc"</span>]&#125;,&#123;&#125;,&#123;&#125;]</span><br></pre></td></tr></table></figure><ul><li>可变类型/不可变类型<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">可变类型：列表、字典、集合</span><br><span class="line">不可变类型：数字、字符串、元组</span><br></pre></td></tr></table></figure></li><li>列表去重的方法</li></ul><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">a = [<span class="number">111</span>,<span class="number">22</span>,<span class="number">33</span>,<span class="number">1</span>,<span class="number">111</span>,<span class="number">111</span>,<span class="number">111</span>,<span class="number">343</span>]</span><br><span class="line">b = set(a)</span><br><span class="line">c = list(b)</span><br><span class="line">d = tuple(a)</span><br><span class="line"></span><br><span class="line">"a"+"b"----&gt;"ab"</span><br></pre></td></tr></table></figure><h1 id="4-切片"><a href="#4-切片" class="headerlink" title="4. 切片"></a>4. 切片</h1><p>顺序、选择、循环</p><h1 id="5-if语句"><a href="#5-if语句" class="headerlink" title="5. if语句"></a>5. if语句</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> 条件:</span><br><span class="line">xxxx</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> 条件:</span><br><span class="line">xxxx</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">xxxx2</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> 条件<span class="number">1</span>:</span><br><span class="line">xxx1</span><br><span class="line"><span class="keyword">elif</span> 条件<span class="number">2</span>:</span><br><span class="line">xxx2:</span><br><span class="line"><span class="keyword">elif</span> 条件<span class="number">3</span>:</span><br><span class="line">xxxx3</span><br><span class="line">.....</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">xxxx</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> xxx:</span><br><span class="line">xxx</span><br><span class="line">xxx</span><br><span class="line">xx</span><br><span class="line"><span class="keyword">if</span> yyy:</span><br><span class="line">yyyyy1</span><br></pre></td></tr></table></figure><h1 id="6-while语句"><a href="#6-while语句" class="headerlink" title="6. while语句"></a>6. while语句</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">i = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> i&lt;<span class="number">100</span>:</span><br><span class="line">xxxx</span><br><span class="line">xxx</span><br><span class="line">xxx</span><br><span class="line">i+=<span class="number">1</span></span><br><span class="line"></span><br><span class="line">i = <span class="number">100</span></span><br><span class="line"><span class="keyword">while</span> i&gt;<span class="number">0</span>:</span><br><span class="line">print(i)</span><br><span class="line">i-=<span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line"><span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> xxx:</span><br><span class="line"><span class="keyword">while</span> yyy:</span><br><span class="line"><span class="keyword">pass</span></span><br></pre></td></tr></table></figure><h1 id="7-for"><a href="#7-for" class="headerlink" title="7. for"></a>7. for</h1><ul><li>一般什么情况用for循环 </li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a = [<span class="number">111</span>,<span class="number">22</span>,<span class="number">33</span>]     </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> a:</span><br><span class="line">xxxxx               <span class="comment">#遍历</span></span><br></pre></td></tr></table></figure><p><strong>思考：在执行的时候i能改值吗    ？</strong></p><h1 id="8-各种嵌套"><a href="#8-各种嵌套" class="headerlink" title="8. 各种嵌套"></a>8. 各种嵌套</h1><h1 id="9-函数、参数、返回值、全局-局部变量、多个return、一个return返回多个值"><a href="#9-函数、参数、返回值、全局-局部变量、多个return、一个return返回多个值" class="headerlink" title="9. 函数、参数、返回值、全局/局部变量、多个return、一个return返回多个值"></a>9. 函数、参数、返回值、全局/局部变量、多个return、一个return返回多个值</h1><ul><li>什么是函数</li><li>参数分为实参，和形参</li><li>什么叫缺省参数<br>  xxx(实参)</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">结束一个函数:<span class="keyword">return</span></span><br><span class="line">结束一个循环:<span class="keyword">break</span>/<span class="keyword">continue</span></span><br><span class="line">结束一个程序:exit()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test</span><span class="params">(a,b,c=<span class="number">100</span>,*args,**kwargs)</span>:</span></span><br><span class="line"><span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">test(b=<span class="number">11</span>,a=<span class="number">22</span>,<span class="number">100</span>,<span class="number">200</span>,<span class="number">300</span>,<span class="number">400</span>,mm=<span class="number">100</span>,nn=<span class="number">20</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">num = <span class="number">100</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test</span><span class="params">()</span>:</span></span><br><span class="line"><span class="keyword">global</span> num</span><br><span class="line">num=<span class="number">200</span></span><br></pre></td></tr></table></figure><p>​    </p><h1 id="10-类、对象"><a href="#10-类、对象" class="headerlink" title="10. 类、对象"></a>10. 类、对象</h1><p>类的作用，再次封装</p><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Animal</span><span class="params">(父类)</span>:</span></span><br><span class="line"></span><br><span class="line">类属性</span><br><span class="line">num = <span class="number">100</span></span><br><span class="line"></span><br><span class="line">实例方法</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">self.xxx = <span class="number">100</span> 实例属性</span><br><span class="line">父类名字.父类方法(self)</span><br><span class="line">super().父类的方法名()</span><br><span class="line">super(当前类的名字Animal,self).父类的方法名()</span><br><span class="line"></span><br><span class="line">实例方法</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tset</span><span class="params">(self)</span>:</span></span><br><span class="line">Animal.num = <span class="number">300</span></span><br><span class="line"></span><br><span class="line">类方法</span><br><span class="line"><span class="meta">@classmethod</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">xxx</span><span class="params">(cls)</span>:</span></span><br><span class="line">cls.num = <span class="number">200</span></span><br><span class="line"></span><br><span class="line">静态方法</span><br><span class="line"><span class="meta">@staticmethod</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">yyy</span><span class="params">()</span>:</span></span><br><span class="line"><span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">a = Animal()</span><br><span class="line">b = a</span><br><span class="line"></span><br><span class="line">del a-----&gt;不会调用__del__</span><br><span class="line">del b-----&gt;调用__del__方法</span><br></pre></td></tr></table></figure><h1 id="11-异常"><a href="#11-异常" class="headerlink" title="11. 异常"></a>11. 异常</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line"></span><br><span class="line">xxxx</span><br><span class="line"></span><br><span class="line"><span class="keyword">except</span> 异常的名字:</span><br><span class="line">异常的处理。。。。</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">没有异常的时候执行</span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">不管有没有产生异常，都会执行</span><br></pre></td></tr></table></figure><h1 id="12-模块、包"><a href="#12-模块、包" class="headerlink" title="12. 模块、包"></a>12. 模块、包</h1><p>模块和包的区别</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> 模块、包xxxx</span><br><span class="line">xxxx.功能()</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> 模块 <span class="keyword">import</span> test1,test2</span><br><span class="line">test1()</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> .... <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ ==<span class="string">"__main__"</span>:</span><br><span class="line">xxx</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> Python </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Python </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+  
+  
+</search>
