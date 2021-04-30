@@ -31,24 +31,30 @@ class Musics {
                 imageUrl: '/music/img/motor.jpg'
             },{
                 id: 2,
+                title: 'Thats Why You Go Away',
+                singer: 'Michael Learns To Rock',
+                songUrl: '/music/song/Thats Why You Go Away__Michael Learns To Rock.mp3',
+                imageUrl: '/music/img/why.jpg'
+            },{
+                id: 3,
                 title: '红豆',
                 singer: '方大同',
                 songUrl: '/music/song/红豆_方大同.mp3',
                 imageUrl: '/music/img/hongdou.jpg'
             },{
-                id: 3,
+                id: 4,
                 title: '后来遇见她',
                 singer: '送给佳音',
                 songUrl: '/music/song/后来遇见他_胡66.mp3',
                 imageUrl: '/music/img/jiayin.jpg'
             },{
-                id: 3,
+                id: 5,
                 title: '相依为命',
                 singer: '陈小春',
                 songUrl: '/music/song/相依为命_陈小春.mp3',
                 imageUrl: '/music/img/相依为命.jpg'
             },{
-                id: 4,
+                id: 6,
                 title: '把孤独当作晚餐',
                 singer: '范茹',
                 songUrl: '/music/song/把孤独当作晚餐.mp3',
