@@ -212,19 +212,6 @@
     
     
     <entry>
-      <title>Hexo模板自定义改进记录</title>
-      <link href="2020/03/21/Hexo200321-Hexo%E6%A8%A1%E6%9D%BF%E8%87%AA%E5%AE%9A%E4%B9%89%E6%94%B9%E8%BF%9B%E8%AE%B0%E5%BD%95/"/>
-      <url>2020/03/21/Hexo200321-Hexo%E6%A8%A1%E6%9D%BF%E8%87%AA%E5%AE%9A%E4%B9%89%E6%94%B9%E8%BF%9B%E8%AE%B0%E5%BD%95/</url>
-      
-        <content type="html"><![CDATA[<p><img src="/2020/03/21/Hexo200321-Hexo%E6%A8%A1%E6%9D%BF%E8%87%AA%E5%AE%9A%E4%B9%89%E6%94%B9%E8%BF%9B%E8%AE%B0%E5%BD%95/200321-7.jpg" alt="The First Title Picture"></p><a id="more"></a><p><strong>本文介绍自定义更改Hexo模板</strong></p>]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>Hexo博客精简安装教程</title>
       <link href="2020/03/21/Hexo200321-Hexo%E5%8D%9A%E5%AE%A2%E7%B2%BE%E7%AE%80%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/"/>
       <url>2020/03/21/Hexo200321-Hexo%E5%8D%9A%E5%AE%A2%E7%B2%BE%E7%AE%80%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/</url>
@@ -398,6 +385,31 @@
             <tag> Nas </tag>
             
             <tag> Synology </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>macOS上使用VScode编译配置C++语言开发环境</title>
+      <link href="2019/09/18/Cpp190918-macOS%E4%B8%8A%E4%BD%BF%E7%94%A8VScode%E7%BC%96%E8%AF%91%E9%85%8D%E7%BD%AEC-%E8%AF%AD%E8%A8%80%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/"/>
+      <url>2019/09/18/Cpp190918-macOS%E4%B8%8A%E4%BD%BF%E7%94%A8VScode%E7%BC%96%E8%AF%91%E9%85%8D%E7%BD%AEC-%E8%AF%AD%E8%A8%80%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2019/09/18/Cpp190918-macOS%E4%B8%8A%E4%BD%BF%E7%94%A8VScode%E7%BC%96%E8%AF%91%E9%85%8D%E7%BD%AEC-%E8%AF%AD%E8%A8%80%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/190918-5.jpg" alt="T"></p><a id="more"></a><p>本文介绍<code>macOS</code>上使用<code>VScode</code>编译配置<code>C++</code>语言开发环境</p><h1 id="1-准备工作"><a href="#1-准备工作" class="headerlink" title="1.准备工作"></a>1.准备工作</h1><p>安装<code>C/C++</code>插件</p><p><img src="/2019/09/18/Cpp190918-macOS%E4%B8%8A%E4%BD%BF%E7%94%A8VScode%E7%BC%96%E8%AF%91%E9%85%8D%E7%BD%AEC-%E8%AF%AD%E8%A8%80%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/190918-2.png" alt="1"></p><h1 id="2-配置c-cpp-properties-json文件"><a href="#2-配置c-cpp-properties-json文件" class="headerlink" title="2.配置c_cpp_properties.json文件"></a>2.配置c_cpp_properties.json文件</h1><p><code>[⇧⌘P]</code>打开命令模式，选择<code>[C/Cpp: Edit Configurations(JSON)]</code>命令，回车后会自动生成一个<code>.vscode</code>目录，目录下有一个<code>c_cpp_properties.json</code>文件，如下所示：</p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"configurations"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"name"</span>: <span class="string">"Mac"</span>,</span><br><span class="line">            <span class="attr">"defines"</span>: [],</span><br><span class="line">            <span class="attr">"macFrameworkPath"</span>: [</span><br><span class="line">                <span class="string">"/System/Library/Frameworks"</span>,</span><br><span class="line">                <span class="string">"/Library/Frameworks"</span>,</span><br><span class="line">                <span class="string">"$&#123;workspaceFolder&#125;/**"</span></span><br><span class="line">            ],</span><br><span class="line">            <span class="attr">"compilerPath"</span>: <span class="string">"/usr/bin/g++"</span>,</span><br><span class="line">            <span class="attr">"cStandard"</span>: <span class="string">"c11"</span>,</span><br><span class="line">            <span class="attr">"cppStandard"</span>: <span class="string">"c++17"</span>,</span><br><span class="line">            <span class="attr">"intelliSenseMode"</span>: <span class="string">"clang-x64"</span>,</span><br><span class="line">            <span class="attr">"browse"</span>: &#123;</span><br><span class="line">                <span class="attr">"path"</span>: [</span><br><span class="line">                    <span class="string">"$&#123;workspaceFolder&#125;"</span></span><br><span class="line">                ],</span><br><span class="line">                <span class="attr">"limitSymbolsToIncludedHeaders"</span>: <span class="literal">true</span>,</span><br><span class="line">                <span class="attr">"databaseFilename"</span>: <span class="string">""</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">"version"</span>: <span class="number">4</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h1 id="3-配置tasks-json文件"><a href="#3-配置tasks-json文件" class="headerlink" title="3.配置tasks.json文件"></a>3.配置tasks.json文件</h1><p><code>[⇧⌘P]</code>打开命令模式，选择<code>[Tasks: Configure Task]</code>命令，选择的模板为<code>MSBuild</code>，回车后会自动在<code>.vscode</code>目录下生成一个<code>tasks.json</code>文件：</p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="comment">// See https://go.microsoft.com/fwlink/?LinkId=733558</span></span><br><span class="line">    <span class="comment">// for the documentation about the tasks.json format</span></span><br><span class="line">    <span class="attr">"version"</span>: <span class="string">"2.0.0"</span>,</span><br><span class="line">    <span class="attr">"tasks"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"label"</span>: <span class="string">"build c++"</span>,</span><br><span class="line">            <span class="attr">"type"</span>: <span class="string">"shell"</span>,</span><br><span class="line">            <span class="attr">"command"</span>: <span class="string">"g++"</span>,</span><br><span class="line">            <span class="attr">"args"</span>: [</span><br><span class="line">                <span class="string">"$&#123;file&#125;"</span>,</span><br><span class="line">                <span class="string">"-std=c++17"</span>,</span><br><span class="line">                <span class="string">"-g"</span>,</span><br><span class="line">                <span class="string">"-Wall"</span>,</span><br><span class="line">                <span class="string">"-lm"</span>,</span><br><span class="line">                <span class="string">"-o"</span>,</span><br><span class="line">                <span class="string">"$&#123;fileDirname&#125;/$&#123;fileBasenameNoExtension&#125;.out"</span></span><br><span class="line">            ],</span><br><span class="line">            <span class="attr">"group"</span>: <span class="string">"build"</span>,</span><br><span class="line">            <span class="attr">"presentation"</span>: &#123;</span><br><span class="line">                <span class="attr">"reveal"</span>: <span class="string">"silent"</span>,</span><br><span class="line">                <span class="attr">"panel"</span>: <span class="string">"shared"</span>,</span><br><span class="line">                <span class="attr">"echo"</span>: <span class="literal">true</span>,</span><br><span class="line">                <span class="attr">"focus"</span>: <span class="literal">false</span>,</span><br><span class="line">                <span class="attr">"showReuseMessage"</span>: <span class="literal">true</span>,</span><br><span class="line">                <span class="attr">"clear"</span>: <span class="literal">false</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"problemMatcher"</span>: <span class="string">"$gcc"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"label"</span>: <span class="string">"run c++"</span>,</span><br><span class="line">            <span class="attr">"type"</span>: <span class="string">"shell"</span>,</span><br><span class="line">            <span class="attr">"dependsOn"</span>: <span class="string">"build c++"</span>,</span><br><span class="line">            <span class="attr">"command"</span>: <span class="string">"$&#123;fileDirname&#125;/$&#123;fileBasenameNoExtension&#125;.out"</span>,</span><br><span class="line">            <span class="attr">"presentation"</span>: &#123;</span><br><span class="line">                <span class="attr">"focus"</span>: <span class="literal">true</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"group"</span>: <span class="string">"test"</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h1 id="4-配置launch-json文件"><a href="#4-配置launch-json文件" class="headerlink" title="4.配置launch.json文件"></a>4.配置launch.json文件</h1><p><strong>方式1：</strong></p><p><img src="/2019/09/18/Cpp190918-macOS%E4%B8%8A%E4%BD%BF%E7%94%A8VScode%E7%BC%96%E8%AF%91%E9%85%8D%E7%BD%AEC-%E8%AF%AD%E8%A8%80%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/190918-1.png" alt="1"></p><p><strong>方式2：</strong></p><p><code>[⇧⌘P]</code>打开命令模式，选择<code>[Debug: Open launch.json]</code>命令，选择的模板为<code>C/C++</code>，回车后会自动在<code>.vscode</code>目录下生成一个<code>launch.json</code>文件：</p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Use IntelliSense to learn about possible attributes.</span></span><br><span class="line">    <span class="comment">// Hover to view descriptions of existing attributes.</span></span><br><span class="line">    <span class="comment">// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387</span></span><br><span class="line">    <span class="attr">"version"</span>: <span class="string">"0.2.0"</span>,</span><br><span class="line">    <span class="attr">"configurations"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"name"</span>: <span class="string">"(lldb) Launch"</span>,</span><br><span class="line">            <span class="attr">"type"</span>: <span class="string">"cppdbg"</span>,</span><br><span class="line">            <span class="attr">"request"</span>: <span class="string">"launch"</span>,</span><br><span class="line">            <span class="attr">"program"</span>: <span class="string">"enter program name, for example $&#123;workspaceFolder&#125;/a.out"</span>,</span><br><span class="line">            <span class="attr">"args"</span>: [],</span><br><span class="line">            <span class="attr">"stopAtEntry"</span>: <span class="literal">false</span>,</span><br><span class="line">            <span class="attr">"cwd"</span>: <span class="string">"$&#123;workspaceFolder&#125;"</span>,</span><br><span class="line">            <span class="attr">"environment"</span>: [],</span><br><span class="line">            <span class="attr">"externalConsole"</span>: <span class="literal">false</span>,</span><br><span class="line">            <span class="attr">"MIMode"</span>: <span class="string">"lldb"</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>完成这三步<code>C++</code>开发环境就配置好了，接下来就可以编译，运行，调试<code>C++</code>程序了。</p><p><code>[⇧⌘B]</code>是编译程序，<code>[⇧⌘R]</code>是运行程序。</p><p>如果安装了插件<code>『Code Runner』</code>可以更快捷地直接运行程序，安装看下一步。</p><h1 id="5-安装「Code-Runner」插件"><a href="#5-安装「Code-Runner」插件" class="headerlink" title="5.安装「Code Runner」插件"></a>5.安装「Code Runner」插件</h1><p><img src="/2019/09/18/Cpp190918-macOS%E4%B8%8A%E4%BD%BF%E7%94%A8VScode%E7%BC%96%E8%AF%91%E9%85%8D%E7%BD%AEC-%E8%AF%AD%E8%A8%80%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/190918-3.png" alt="1"></p><p>安装完插件，<code>[⇧⌘P]</code>打开命令模式选择<code>「run code」</code>运行项目，这个时候你可以直接在<code>cpp代码区右键-&gt; 「run code」</code>，就可以直接输出结果，而不需要<code>[⇧⌘B]</code>编译程序和<code>[⇧⌘R]</code>运行程序了。</p><p>如果需要调试，那就按<code>F5</code>，进入调试模式即可。</p><h1 id="6-写在最后"><a href="#6-写在最后" class="headerlink" title="6.写在最后"></a>6.写在最后</h1><p>如果你看完上面的安装过程，你还没有成功配置C++环境，或者你搞不清楚这些具体的关系，你只需要保证你的工作区间（你存放cpp文件或项目的文件夹）有一个隐藏文件夹叫<code>.vscode</code>，而这个文件夹中又有三个配置好的文件即可。</p><p><img src="/2019/09/18/Cpp190918-macOS%E4%B8%8A%E4%BD%BF%E7%94%A8VScode%E7%BC%96%E8%AF%91%E9%85%8D%E7%BD%AEC-%E8%AF%AD%E8%A8%80%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/190918-4.png" alt="1"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Cpp </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Cpp </tag>
             
         </tags>
       
@@ -691,31 +703,6 @@
         <tags>
             
             <tag> Data </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Cpp测试文件</title>
-      <link href="2018/04/03/Cpp200505-Cpp%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6/"/>
-      <url>2018/04/03/Cpp200505-Cpp%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6/</url>
-      
-        <content type="html"><![CDATA[<p><img src="/2018/04/03/Cpp200505-Cpp%E6%B5%8B%E8%AF%95%E6%96%87%E4%BB%B6/180403-1.jpg" alt="The First Title Picture" title="Optional Title"></p><a id="more"></a><p>本文介绍日语的学习路线</p><h1 id="To-Be-Updating"><a href="#To-Be-Updating" class="headerlink" title="To Be Updating"></a>To Be Updating</h1>]]></content>
-      
-      
-      <categories>
-          
-          <category> Cpp </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> Cpp </tag>
             
         </tags>
       
