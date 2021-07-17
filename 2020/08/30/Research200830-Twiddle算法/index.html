@@ -17,11 +17,11 @@
     <!--<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>-->
     <title>
         
-          macOS开启HiDPI外接2K显示器（解决字体发虚问题） - Zhihao&#39;s Blog
+          Twiddle算法 - Zhihao&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://ningmoon.github.io/2020/05/20/Mac200520-macOS开启HiDPI外接2K显示器/">
+    <link rel="canonical" href="http://ningmoon.github.io/2020/08/30/Research200830-Twiddle算法/">
 
     <!-- Bootstrap Core CSS -->
     
@@ -91,7 +91,7 @@
     header.intro-header{
         
             
-                background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('mac-bg.png')
+                background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('research-bg.png')
                 /*post*/
             
         
@@ -113,14 +113,16 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#HiDPI" title="HiDPI">HiDPI</a>
+                              <a class="tag" href="/tags/#PID" title="PID">PID</a>
+                            
+                              <a class="tag" href="/tags/#Twiddle" title="Twiddle">Twiddle</a>
                             
                         </div>
-                        <h1>macOS开启HiDPI外接2K显示器（解决字体发虚问题）</h1>
-                        <h2 class="subheading">macOS turns on HiDPI external 2K display</h2>
+                        <h1>Twiddle算法</h1>
+                        <h2 class="subheading">The Twiddle Algorithm</h2>
                         <span class="meta">
                             Posted by Zhihao on
-                            2020-05-20
+                            2020-08-30
                         </span>
 
                         
@@ -256,19 +258,14 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p><img src="/2020/05/20/Mac200520-macOS%E5%BC%80%E5%90%AFHiDPI%E5%A4%96%E6%8E%A52K%E6%98%BE%E7%A4%BA%E5%99%A8/200424-1.jpg" alt="The First Title Picture"></p>
+                <p><img src="/2020/08/30/Research200830-Twiddle%E7%AE%97%E6%B3%95/200830-1.jpg" alt="The First Title Picture" title="Optional Title"></p>
 <a id="more"></a>
-<h1 id="1-前言："><a href="#1-前言：" class="headerlink" title="1.前言："></a>1.前言：</h1><p>入手了一台2K显示器，但是直接连HDMI线显示的效果不忍直视，所以我们需要开启苹果系统的hidpi模式来实现完美显示。<br>至于为什么要开启hidpi模式？2k显示器的分辨率是2560*1440，如果采用默认的设置，那么在显示器上面的字会特别的小。我尝试了用最新版的SwitchResX来强制打开1080P的分辨率，但是实际的效果并不好，虽然大小适配了，但是字体发虚，在查阅了不少资料之后，总结了这篇文章中最简单的实现HiDPI的方法。希望这篇文章可以帮到你。</p>
-<h1 id="2-解决办法："><a href="#2-解决办法：" class="headerlink" title="2.解决办法："></a>2.解决办法：</h1><h1 id="2-1-打开系统HiDPI-终端运行）"><a href="#2-1-打开系统HiDPI-终端运行）" class="headerlink" title="2.1 打开系统HiDPI (终端运行）"></a>2.1 打开系统HiDPI (终端运行）</h1><p><code>sudo defaults write /Library/Preferences/com.apple.windowserver DisplayResolutionEnabled -bool YES</code><br>如果使用 4K 或更高分辨率的显示器，macOS 基本上原生支持 HiDPI，直接下载从RDM即可。如无法启用或没有合适的分辨率，再使用配置文件。</p>
-<h1 id="2-2-禁用SIP-macOS-10-11及以上"><a href="#2-2-禁用SIP-macOS-10-11及以上" class="headerlink" title="2.2 禁用SIP (macOS 10.11及以上)"></a>2.2 禁用SIP (macOS 10.11及以上)</h1><p>macOS 10.11 El Capitan 开始默认启用 System Integrity Protection (SIP) 防止系统文件被修改。因为配置文件需要放在系统文件夹中，要禁用 SIP。</p>
-<p>开机或重启时，在听到开机的那个声音之后按住<code>Command + R</code> 组合键，进入 macOS 恢复模式，在屏幕上方的菜单中选择 <code>Utlities &gt; Terminal</code> 打开终端，输入并执行：<br><code>csrutil disable</code><br>然后重启系统。进行下一步。</p>
-<p><strong>在全部设置完以后，建议安全起见还是重新启用 SIP，按照以上步骤进入恢复模式，输入并执行 <code>csrutil enable</code> </strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在这里插一句，最开始我做完这一步就直接去用SwitchResX的设置方法设置了强制打开1080P的分辨率，但是效果很不好，虽然适配了显示的大小，但是所有的显示都发飘，于是就有了以下的设置方法。</span><br></pre></td></tr></table></figure>
-<h1 id="2-3-获得显示器信息"><a href="#2-3-获得显示器信息" class="headerlink" title="2.3 获得显示器信息"></a>2.3 获得显示器信息</h1><p>获得显示器信息有很多种方法，在这里用最简单的，我们分别需要获得显示器的 VendorID 和 ProductID （制造商ID 和 产品ID），在终端运行：<br><code>ioreg -lw0 | grep IODisplayPrefsKey | grep -o &#39;/[^/]\+&quot;$&#39;</code><br>输出大概是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; ioreg -lw0 | grep IODisplayPrefsKey | grep -o &#39;&#x2F;[^&#x2F;]\+&quot;$&#39;</span><br><span class="line">&#x2F;AppleBacklightDisplay-610-a029&quot;</span><br><span class="line">&#x2F;AppleDisplay-10ac-d0ff&quot;</span><br></pre></td></tr></table></figure><br>第一条AppleBacklightDisplay-610-a029是MBP的内置显示屏。<br>第二条是外接显示器。如果你合上屏幕，这样只会输出正在使用的外接显示器。<br>着重在第二条，<code>/AppleDisplay-10ac-d0ff&quot;</code> 这里的<code>10ac</code>和<code>d0ff</code>是两个十六进制数。第一个为VendorID，第二个为ProductID。电脑不同，显示的数值不同，这里的数值是我的电脑为例。</p>
-<h1 id="2-4-生成配置文件夹"><a href="#2-4-生成配置文件夹" class="headerlink" title="2.4 生成配置文件夹"></a>2.4 生成配置文件夹</h1><h1 id="2-4-1-简单方法"><a href="#2-4-1-简单方法" class="headerlink" title="2.4.1 简单方法"></a>2.4.1 简单方法</h1><p>①生成配置文件<br>这一步的配置如果自己输入比较复杂，建议直接采用一键生成的方式进行配置，参考大神的<a href="https://wacky.one/blog/macos-hi-dpi/#copy-conf" target="_blank" rel="noopener">制作</a>。<br>具体按下图设置，分辨率你直接按下图填入即可，两个ID需要根据你的实际情况进行填写。<br><img src="/2020/05/20/Mac200520-macOS%E5%BC%80%E5%90%AFHiDPI%E5%A4%96%E6%8E%A52K%E6%98%BE%E7%A4%BA%E5%99%A8/200520-1.png" alt><br>点击生成之后就已经生成了配置文件了。<br>②创建配置文件夹<br>这一步简单，直接创建一个空白文件夹，重命名<code>DisplayVendorID-xxx</code>这里的<code>xxx</code>就是你上一步的VendorID。<br>③将①中的配置文件复制到②中的文件夹中<br>④将③中的文件夹拷贝到以下路径的文件夹中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># OS X 10.11及以上</span><br><span class="line">DIR&#x3D;&#x2F;System&#x2F;Library&#x2F;Displays&#x2F;Contents&#x2F;Resources&#x2F;Overrides</span><br><span class="line"># OS X 10.10及以下</span><br><span class="line">DIR&#x3D;&#x2F;System&#x2F;Library&#x2F;Displays&#x2F;Overrides</span><br></pre></td></tr></table></figure><br>到这里为止，准备工作就基本完成了。<br>如果这里的一键生成配置ok的话，直接跳到2.5即可。<br>如果这里的一键生成配置失效的话，就只能用2.4.2的复杂方法进行手动配置。</p>
-<h1 id="2-4-2-复杂方法"><a href="#2-4-2-复杂方法" class="headerlink" title="2.4.2 复杂方法"></a>2.4.2 复杂方法</h1><p>其实也不复杂，按照如下图所示，直接建立一个空白文档，将代码复制进去即可。<br><img src="/2020/05/20/Mac200520-macOS%E5%BC%80%E5%90%AFHiDPI%E5%A4%96%E6%8E%A52K%E6%98%BE%E7%A4%BA%E5%99%A8/200520-3.png" alt><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;!DOCTYPE plist PUBLIC &quot;-&#x2F;&#x2F;Apple&#x2F;&#x2F;DTD PLIST 1.0&#x2F;&#x2F;EN&quot; &quot;http:&#x2F;&#x2F;www.apple.com&#x2F;DTDs&#x2F;PropertyList-1.0.dtd&quot;&gt;</span><br><span class="line">&lt;plist version&#x3D;&quot;1.0&quot;&gt;</span><br><span class="line">&lt;dict&gt;</span><br><span class="line">    &lt;key&gt;DisplayVendorID&lt;&#x2F;key&gt;</span><br><span class="line">    &lt;integer&gt;xxxx&lt;&#x2F;integer&gt;           </span><br><span class="line">    &lt;key&gt;DisplayProductID&lt;&#x2F;key&gt;</span><br><span class="line">    &lt;integer&gt;xxxx&lt;&#x2F;integer&gt;           </span><br><span class="line">    &lt;key&gt;scale-resolutions&lt;&#x2F;key&gt;</span><br><span class="line">    &lt;array&gt;</span><br><span class="line">        &lt;data&gt;AAAHgAAABDgAAAABACAAAA&#x3D;&#x3D;&lt;&#x2F;data&gt;    &lt;!-- 1920x1080 --&gt;</span><br><span class="line">        &lt;data&gt;AAAPAAAACHAAAAABACAAAA&#x3D;&#x3D;&lt;&#x2F;data&gt;</span><br><span class="line">        &lt;data&gt;AAAPAAAACHAAAAABACAAAA&#x3D;&#x3D;&lt;&#x2F;data&gt;    &lt;!-- 3840x2160 --&gt;</span><br><span class="line">        &lt;data&gt;AAAeAAAAEOAAAAABACAAAA&#x3D;&#x3D;&lt;&#x2F;data&gt;</span><br><span class="line">    &lt;&#x2F;array&gt;</span><br><span class="line">&lt;&#x2F;dict&gt;</span><br><span class="line">&lt;&#x2F;plist&gt;</span><br></pre></td></tr></table></figure><br>文件配置完成之后就按照2.4.1中的②③④操作即可。</p>
-<h1 id="2-5-使用RDM进行切换"><a href="#2-5-使用RDM进行切换" class="headerlink" title="2.5 使用RDM进行切换"></a>2.5 使用RDM进行切换</h1><p>重启系统打开RDM，这就可以进行切换了。<br>如图：<br><img src="/2020/05/20/Mac200520-macOS%E5%BC%80%E5%90%AFHiDPI%E5%A4%96%E6%8E%A52K%E6%98%BE%E7%A4%BA%E5%99%A8/200520-2.png" style="zoom: 50%;"></p>
-<h1 id="3-最后总结"><a href="#3-最后总结" class="headerlink" title="3 最后总结"></a>3 最后总结</h1><p>这个方法是我自己尝试过不仅能够调节分辨率，而且也不会出现字体发飘的现象，而且应该是比较安全的一个方法。</p>
+<h1 id="1-简单说明"><a href="#1-简单说明" class="headerlink" title="1.简单说明"></a>1.简单说明</h1><p>Twiddle算法可以为一个计算误差的算法A去找到一个好的参数P。比如在PID调参中，一次调整一个参数，最终生成最优参数集，实现最优参数的搜索。</p>
+<p>相较于梯度下降之类的算法的话，最大的优点就应该是简单了吧，不用去计算高维函数的梯度。</p>
+<p>Talk is cheap, show me the code!</p>
+<h1 id="2-代码说明"><a href="#2-代码说明" class="headerlink" title="2.代码说明"></a>2.代码说明</h1><p>下面写一段伪Python代码来说明一下，在这里的话以PID为例。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 我们为PID算法选取初始化参数构成参数向量p，顺序依次为拍P-&gt;I-&gt;D</span></span><br><span class="line"><span class="comment"># 因为这也符合PID整定的一般规则，先比例，后积分，再微分。</span></span><br><span class="line">p = [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]</span><br><span class="line"><span class="comment"># 在这里我们定义初始的变化量</span></span><br><span class="line">dp = [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>]</span><br><span class="line"><span class="comment"># 这里的A(p)是计算误差的算法</span></span><br><span class="line">best_err = A(p)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 我们将误差的阈值设置为0.1，</span></span><br><span class="line">threshold = <span class="number">0.1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#如果dp的变化量和比我们设置的阈值大的话，执行循环操作</span></span><br><span class="line"><span class="keyword">while</span> sum(dp) &gt; threshold:</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(p)):</span><br><span class="line">        p[i] += dp[i]</span><br><span class="line">        err = A(p)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> err &lt; best_err:  <span class="comment"># 误差比目前最好的误差更小则更新最好误差值</span></span><br><span class="line">            best_err = err</span><br><span class="line">            dp[i] *= <span class="number">1.1</span></span><br><span class="line">        <span class="keyword">else</span>:  <span class="comment"># 不然的话我们就将目前的参数朝另一个方向进行计算（这里减去2倍是因为刚才加了1次）</span></span><br><span class="line">            p[i] -= <span class="number">2</span> * dp[i]  </span><br><span class="line">            err = A(p)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> err &lt; best_err:  <span class="comment"># 误差变优的话则更新</span></span><br><span class="line">                best_err = err</span><br><span class="line">                dp[i] *= <span class="number">1.05</span></span><br><span class="line">            <span class="keyword">else</span>:  <span class="comment"># 不然的话就说明目前的变化值设计的太大，既不能There was no improvement</span></span><br><span class="line">                p[i] += dp[i] <span class="comment"># 这一步是为了让p[i]返回到这次循环前的值，即不加不减</span></span><br><span class="line">                dp[i] *= <span class="number">0.95</span> <span class="comment"># 减小变化值继续反复更新参数</span></span><br></pre></td></tr></table></figure>
+<p>　　　　　　　</p>
 
                 
                 <hr>
@@ -277,14 +274,10 @@
                 <ul class="pager">
 
                     
-                    <li class="previous">
-                        <a href="/2020/08/30/Research200830-Twiddle算法/" data-toggle="tooltip" data-placement="top" title="Twiddle算法">&larr; Previous Post</a>
-                    </li>
-                    
 
                     
                     <li class="next">
-                        <a href="/2020/04/24/Mac200424-Office2019安装冲突解决方法-ErrorCode-30182-392/" data-toggle="tooltip" data-placement="top" title="Office2019安装冲突解决方法 ErrorCode 30182-392">Next Post &rarr;</a>
+                        <a href="/2020/05/20/Mac200520-macOS开启HiDPI外接2K显示器/" data-toggle="tooltip" data-placement="top" title="macOS开启HiDPI外接2K显示器（解决字体发虚问题）">Next Post &rarr;</a>
                     </li>
                     
 
@@ -388,7 +381,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#1-前言："><span class="toc-nav-text">1.前言：</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-解决办法："><span class="toc-nav-text">2.解决办法：</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-1-打开系统HiDPI-终端运行）"><span class="toc-nav-text">2.1 打开系统HiDPI (终端运行）</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-2-禁用SIP-macOS-10-11及以上"><span class="toc-nav-text">2.2 禁用SIP (macOS 10.11及以上)</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-3-获得显示器信息"><span class="toc-nav-text">2.3 获得显示器信息</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-4-生成配置文件夹"><span class="toc-nav-text">2.4 生成配置文件夹</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-4-1-简单方法"><span class="toc-nav-text">2.4.1 简单方法</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-4-2-复杂方法"><span class="toc-nav-text">2.4.2 复杂方法</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-5-使用RDM进行切换"><span class="toc-nav-text">2.5 使用RDM进行切换</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#3-最后总结"><span class="toc-nav-text">3 最后总结</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#1-简单说明"><span class="toc-nav-text">1.简单说明</span></a></li><li class="toc-nav-item toc-nav-level-1"><a class="toc-nav-link" href="#2-代码说明"><span class="toc-nav-text">2.代码说明</span></a></li></ol>
         
         </div>
       </aside>
@@ -408,7 +401,9 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#HiDPI" title="HiDPI">HiDPI</a>
+                          <a class="tag" href="/tags/#PID" title="PID">PID</a>
+                        
+                          <a class="tag" href="/tags/#Twiddle" title="Twiddle">Twiddle</a>
                         
                     </div>
                 </section>
