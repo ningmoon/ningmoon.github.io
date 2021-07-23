@@ -3,22 +3,71 @@
 
 
     <url>
-        <loc>http://ningmoon.github.io/tags/string/</loc>
-        <lastmod>2021-07-19T14:51:57.385Z</lastmod>
+        <loc>http://ningmoon.github.io/tags/Algorithm/</loc>
+        <lastmod>2021-07-23T05:42:06.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://ningmoon.github.io/tags/MPC/</loc>
+        <lastmod>2021-07-23T05:42:06.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://ningmoon.github.io/tags/LQR/</loc>
+        <lastmod>2021-07-23T05:42:06.000Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://ningmoon.github.io/tags/stack/</loc>
+        <lastmod>2021-07-22T12:33:33.791Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://ningmoon.github.io/tags/STL/</loc>
-        <lastmod>2021-07-19T14:51:57.385Z</lastmod>
+        <lastmod>2021-07-22T12:33:33.791Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://ningmoon.github.io/tags/Cpp/</loc>
-        <lastmod>2021-07-19T14:51:57.385Z</lastmod>
+        <lastmod>2021-07-22T12:33:33.791Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://ningmoon.github.io/tags/queue/</loc>
+        <lastmod>2021-07-22T12:32:40.686Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://ningmoon.github.io/tags/deque/</loc>
+        <lastmod>2021-07-21T14:52:07.748Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://ningmoon.github.io/tags/string/</loc>
+        <lastmod>2021-07-20T13:36:38.750Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://ningmoon.github.io/tags/vector/</loc>
+        <lastmod>2021-07-20T13:35:29.611Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -103,13 +152,6 @@
     <url>
         <loc>http://ningmoon.github.io/tags/Git/</loc>
         <lastmod>2021-04-29T14:11:29.210Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://ningmoon.github.io/tags/Data/</loc>
-        <lastmod>2021-04-25T13:15:56.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
