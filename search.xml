@@ -60,6 +60,33 @@
     
     
     <entry>
+      <title>Twiddle算法</title>
+      <link href="2021/01/09/Research200109-Twiddle%E7%AE%97%E6%B3%95/"/>
+      <url>2021/01/09/Research200109-Twiddle%E7%AE%97%E6%B3%95/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2021/01/09/Research200109-Twiddle%E7%AE%97%E6%B3%95/210109-1.jpg" alt="The First Title Picture" title="Optional Title"></p><a id="more"></a><h1 id="1-简单说明"><a href="#1-简单说明" class="headerlink" title="1.简单说明"></a>1.简单说明</h1><p>Twiddle算法可以为一个计算误差的算法A去找到一个好的参数P。比如在PID调参中，一次调整一个参数，最终生成最优参数集，实现最优参数的搜索。</p><p>相较于梯度下降之类的算法的话，最大的优点就应该是简单了吧，不用去计算高维函数的梯度。</p><p>Talk is cheap, show me the code!</p><h1 id="2-代码说明"><a href="#2-代码说明" class="headerlink" title="2.代码说明"></a>2.代码说明</h1><p>下面写一段伪Python代码来说明一下，在这里的话以PID为例。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 我们为PID算法选取初始化参数构成参数向量p，顺序依次为拍P-&gt;I-&gt;D</span></span><br><span class="line"><span class="comment"># 因为这也符合PID整定的一般规则，先比例，后积分，再微分。</span></span><br><span class="line">p = [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]</span><br><span class="line"><span class="comment"># 在这里我们定义初始的变化量</span></span><br><span class="line">dp = [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>]</span><br><span class="line"><span class="comment"># 这里的A(p)是计算误差的算法</span></span><br><span class="line">best_err = A(p)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 我们将误差的阈值设置为0.1，</span></span><br><span class="line">threshold = <span class="number">0.1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#如果dp的变化量和比我们设置的阈值大的话，执行循环操作</span></span><br><span class="line"><span class="keyword">while</span> sum(dp) &gt; threshold:</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(p)):</span><br><span class="line">        p[i] += dp[i]</span><br><span class="line">        err = A(p)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> err &lt; best_err:  <span class="comment"># 误差比目前最好的误差更小则更新最好误差值</span></span><br><span class="line">            best_err = err</span><br><span class="line">            dp[i] *= <span class="number">1.1</span></span><br><span class="line">        <span class="keyword">else</span>:  <span class="comment"># 不然的话我们就将目前的参数朝另一个方向进行计算（这里减去2倍是因为刚才加了1次）</span></span><br><span class="line">            p[i] -= <span class="number">2</span> * dp[i]  </span><br><span class="line">            err = A(p)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> err &lt; best_err:  <span class="comment"># 误差变优的话则更新</span></span><br><span class="line">                best_err = err</span><br><span class="line">                dp[i] *= <span class="number">1.05</span></span><br><span class="line">            <span class="keyword">else</span>:  <span class="comment"># 不然的话就说明目前的变化值设计的太大，既不能There was no improvement</span></span><br><span class="line">                p[i] += dp[i] <span class="comment"># 这一步是为了让p[i]返回到这次循环前的值，即不加不减</span></span><br><span class="line">                dp[i] *= <span class="number">0.95</span> <span class="comment"># 减小变化值继续反复更新参数</span></span><br></pre></td></tr></table></figure><p>　　　　　　　</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Research </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> PID </tag>
+            
+            <tag> Twiddle </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>STL容器之list容器</title>
       <link href="2020/11/24/Cpp201124-STL%E5%AE%B9%E5%99%A8%E4%B9%8Blist%E5%AE%B9%E5%99%A8/"/>
       <url>2020/11/24/Cpp201124-STL%E5%AE%B9%E5%99%A8%E4%B9%8Blist%E5%AE%B9%E5%99%A8/</url>
@@ -226,33 +253,6 @@
             <tag> STL </tag>
             
             <tag> string </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Twiddle算法</title>
-      <link href="2020/08/30/Research200830-Twiddle%E7%AE%97%E6%B3%95/"/>
-      <url>2020/08/30/Research200830-Twiddle%E7%AE%97%E6%B3%95/</url>
-      
-        <content type="html"><![CDATA[<p><img src="/2020/08/30/Research200830-Twiddle%E7%AE%97%E6%B3%95/200830-1.jpg" alt="The First Title Picture" title="Optional Title"></p><a id="more"></a><h1 id="1-简单说明"><a href="#1-简单说明" class="headerlink" title="1.简单说明"></a>1.简单说明</h1><p>Twiddle算法可以为一个计算误差的算法A去找到一个好的参数P。比如在PID调参中，一次调整一个参数，最终生成最优参数集，实现最优参数的搜索。</p><p>相较于梯度下降之类的算法的话，最大的优点就应该是简单了吧，不用去计算高维函数的梯度。</p><p>Talk is cheap, show me the code!</p><h1 id="2-代码说明"><a href="#2-代码说明" class="headerlink" title="2.代码说明"></a>2.代码说明</h1><p>下面写一段伪Python代码来说明一下，在这里的话以PID为例。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 我们为PID算法选取初始化参数构成参数向量p，顺序依次为拍P-&gt;I-&gt;D</span></span><br><span class="line"><span class="comment"># 因为这也符合PID整定的一般规则，先比例，后积分，再微分。</span></span><br><span class="line">p = [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>]</span><br><span class="line"><span class="comment"># 在这里我们定义初始的变化量</span></span><br><span class="line">dp = [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>]</span><br><span class="line"><span class="comment"># 这里的A(p)是计算误差的算法</span></span><br><span class="line">best_err = A(p)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 我们将误差的阈值设置为0.1，</span></span><br><span class="line">threshold = <span class="number">0.1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#如果dp的变化量和比我们设置的阈值大的话，执行循环操作</span></span><br><span class="line"><span class="keyword">while</span> sum(dp) &gt; threshold:</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(p)):</span><br><span class="line">        p[i] += dp[i]</span><br><span class="line">        err = A(p)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> err &lt; best_err:  <span class="comment"># 误差比目前最好的误差更小则更新最好误差值</span></span><br><span class="line">            best_err = err</span><br><span class="line">            dp[i] *= <span class="number">1.1</span></span><br><span class="line">        <span class="keyword">else</span>:  <span class="comment"># 不然的话我们就将目前的参数朝另一个方向进行计算（这里减去2倍是因为刚才加了1次）</span></span><br><span class="line">            p[i] -= <span class="number">2</span> * dp[i]  </span><br><span class="line">            err = A(p)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> err &lt; best_err:  <span class="comment"># 误差变优的话则更新</span></span><br><span class="line">                best_err = err</span><br><span class="line">                dp[i] *= <span class="number">1.05</span></span><br><span class="line">            <span class="keyword">else</span>:  <span class="comment"># 不然的话就说明目前的变化值设计的太大，既不能There was no improvement</span></span><br><span class="line">                p[i] += dp[i] <span class="comment"># 这一步是为了让p[i]返回到这次循环前的值，即不加不减</span></span><br><span class="line">                dp[i] *= <span class="number">0.95</span> <span class="comment"># 减小变化值继续反复更新参数</span></span><br></pre></td></tr></table></figure><p>　　　　　　　</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> Research </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> PID </tag>
-            
-            <tag> Twiddle </tag>
             
         </tags>
       

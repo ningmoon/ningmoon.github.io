@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://ningmoon.github.io/2021/01/09/Research200109-Twiddle%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2021-07-24</lastmod>
+  </url>
+  <url>
     <loc>http://ningmoon.github.io/2021/02/01/Research210201-%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E5%8A%A8%E6%80%81%E8%BD%A6%E8%BE%86%E6%A8%A1%E5%9E%8B/</loc>
     <lastmod>2021-07-24</lastmod>
   </url>
@@ -31,10 +35,6 @@
   <url>
     <loc>http://ningmoon.github.io/2020/11/20/Cpp201120-STL%E5%AE%B9%E5%99%A8%E4%B9%8Bvector%E5%AE%B9%E5%99%A8/</loc>
     <lastmod>2021-07-20</lastmod>
-  </url>
-  <url>
-    <loc>http://ningmoon.github.io/2020/08/30/Research200830-Twiddle%E7%AE%97%E6%B3%95/</loc>
-    <lastmod>2021-07-17</lastmod>
   </url>
   <url>
     <loc>http://ningmoon.github.io/2019/05/20/Py190520-%E5%86%99%E4%B8%80%E4%B8%AA%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84%E7%88%AC%E8%99%AB%E7%A8%8B%E5%BA%8F/</loc>
