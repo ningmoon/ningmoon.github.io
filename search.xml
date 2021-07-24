@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>无人驾驶动态车辆模型</title>
+      <link href="2021/02/01/Research210201-%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E5%8A%A8%E6%80%81%E8%BD%A6%E8%BE%86%E6%A8%A1%E5%9E%8B/"/>
+      <url>2021/02/01/Research210201-%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E5%8A%A8%E6%80%81%E8%BD%A6%E8%BE%86%E6%A8%A1%E5%9E%8B/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/2021/02/01/Research210201-%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E5%8A%A8%E6%80%81%E8%BD%A6%E8%BE%86%E6%A8%A1%E5%9E%8B/model-1.jpg" alt="The First Title Picture" title="Optional Title"></p><a id="more"></a><h1 id="1-Intro"><a href="#1-Intro" class="headerlink" title="1 Intro"></a>1 Intro</h1><p>待填坑。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Research </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Driverless </tag>
+            
+            <tag> Dynamics </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>无人驾驶控制算法LQR和MPC的仿真实现</title>
       <link href="2021/01/18/Research210118-%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%8E%A7%E5%88%B6%E7%AE%97%E6%B3%95LQR%E5%92%8CMPC%E7%9A%84%E4%BB%BF%E7%9C%9F%E5%AE%9E%E7%8E%B0/"/>
       <url>2021/01/18/Research210118-%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E6%8E%A7%E5%88%B6%E7%AE%97%E6%B3%95LQR%E5%92%8CMPC%E7%9A%84%E4%BB%BF%E7%9C%9F%E5%AE%9E%E7%8E%B0/</url>
@@ -253,19 +280,6 @@
             <tag> HiDPI </tag>
             
         </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Research210201-无人驾驶动态车辆模型</title>
-      <link href="2020/04/24/Research210201-%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E5%8A%A8%E6%80%81%E8%BD%A6%E8%BE%86%E6%A8%A1%E5%9E%8B/"/>
-      <url>2020/04/24/Research210201-%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E5%8A%A8%E6%80%81%E8%BD%A6%E8%BE%86%E6%A8%A1%E5%9E%8B/</url>
-      
-        <content type="html"><![CDATA[<p>title: 无人驾驶动态车辆模型<br>catalog: true<br>comments: true<br>date: 2021-02-01 08:00:00<br>subtitle: Driverless Dynamic Vehicle Model<br>header-img: research-bg.png<br>tags:</p><ul><li>Driverless</li><li>Dynamic Vehicle Model<br>categories:</li><li>Research</li></ul><p><img src="/2020/04/24/Research210201-%E6%97%A0%E4%BA%BA%E9%A9%BE%E9%A9%B6%E5%8A%A8%E6%80%81%E8%BD%A6%E8%BE%86%E6%A8%A1%E5%9E%8B/model-1.jpg" alt="The First Title Picture" title="Optional Title"></p><a id="more"></a><h1 id="1-Intro"><a href="#1-Intro" class="headerlink" title="1 Intro"></a>1 Intro</h1><p>待填坑。</p>]]></content>
-      
-      
       
     </entry>
     
