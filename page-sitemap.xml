@@ -8,6 +8,20 @@
     </url>
     
     <url>
+        <loc>http://ningmoon.github.io/photography/</loc>
+        <lastmod>2022-06-12T15:55:38.359Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>http://ningmoon.github.io/about/</loc>
+        <lastmod>2022-06-12T15:55:38.161Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
         <loc>http://ningmoon.github.io/categories/</loc>
         <lastmod>2020-03-17T13:03:51.000Z</lastmod>
         <changefreq>weekly</changefreq>
