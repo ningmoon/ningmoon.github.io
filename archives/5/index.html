@@ -113,7 +113,7 @@
                     <div class="site-heading">
                         <h1>Zhihao&#39;s Blog</h1>
                         <!--<hr class="small">-->
-                        <span id="subdusi" class="subheading">Done is better than perfect. It&#39;s never too late to do.</span>
+                        <span id="subdusi" class="subheading">所以，人生的每一个问题都有答案吗？</span>
                     </div>
                 
 
@@ -183,7 +183,7 @@
 
                         
                         <li>
-                            <a href="/about/">Resume1</a>
+                            <a href="/csdn/">csdn</a>
                         </li>
                         
                         
@@ -191,7 +191,7 @@
 
                         
                         <li>
-                            <a href="/csdn/">csdn</a>
+                            <a href="/resume/">Resume</a>
                         </li>
                         
                         
@@ -244,6 +244,20 @@
 
     <!-- Main Content -->
     
+
+
+<style type="text/css">
+    /* 添加样式，使页面标题和副标题垂直居中 */
+    .intro-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh; /* 设置最小高度为80%的视口高度 */
+    }
+</style>
+
+
+
 <!-- Page Header -->
 <!-- New Homepage -->
 <header class="intro-header" style="background-image: url('/img/header_img/home-bg-2-dark.jpg')">
@@ -253,7 +267,9 @@
                 <div class="site-heading">
                     <h1>Home</h1>
                     <!--<hr class="small">-->
-                    <span class="subheading">Done is better than perfect. It&#39;s never too late to do.</span>
+                    <!--<h1 id="dynamic-title"></h1>-->
+                    <span class="subheading" id="dynamic-subtitle"></span>
+                    <!--<span class="subheading">所以，人生的每一个问题都有答案吗？</span>-->
                 </div>
             </div>
         </div>
@@ -262,6 +278,23 @@
 
 <script>
     document.body.classList.add('page-fullscreen');
+
+    // 获取副标题元素和副标题文本
+    const subtitleElement = document.getElementById('dynamic-subtitle');
+    const originalSubtitle = "所以，人生的每一个问题都有答案吗？"; // 原始副标题文本
+    let currentIndex = 0; // 当前要显示的字符索引
+
+    // 定时器，每隔一段时间执行一次函数
+    const typingInterval = setInterval(() => {
+        // 将原始副标题文本的前N个字符显示在副标题元素中
+        subtitleElement.textContent = originalSubtitle.slice(0, currentIndex + 1);
+        currentIndex++;
+
+        // 如果已经显示完整副标题，清除定时器
+        if (currentIndex === originalSubtitle.length) {
+            clearInterval(typingInterval);
+        }
+    }, 200); // 每100毫秒更新一次副标题
 </script>
 
     <!-- Footer -->
