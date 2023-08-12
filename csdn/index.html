@@ -17,11 +17,11 @@
     <!--<link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>-->
     <title>
         
-          Numpy快速入门 - Zhihao&#39;s Blog
+          csdn - Zhihao&#39;s Blog
         
     </title>
 
-    <link rel="canonical" href="http://ningmoon.github.io/2018/12/12/Py181212-Numpy入门/">
+    <link rel="canonical" href="http://ningmoon.github.io/csdn/">
 
     <!-- Bootstrap Core CSS -->
     
@@ -91,8 +91,8 @@
     header.intro-header{
         
             
-                background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('python-bg.jpg')
-                /*post*/
+                background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/img/header_img/404-bg.jpg')
+                /*page*/
             
         
     }
@@ -110,25 +110,10 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 
-                    <div class="post-heading">
-                        <div class="tags">
-                            
-                              <a class="tag" href="/tags/#Python3" title="Python3">Python3</a>
-                            
-                              <a class="tag" href="/tags/#Python2" title="Python2">Python2</a>
-                            
-                              <a class="tag" href="/tags/#Numpy" title="Numpy">Numpy</a>
-                            
-                        </div>
-                        <h1>Numpy快速入门</h1>
-                        <h2 class="subheading">Numpy Quick Start</h2>
-                        <span class="meta">
-                            Posted by Zhihao on
-                            2018-12-12
-                        </span>
-
-                        
-
+                    <div class="site-heading">
+                        <h1>csdn</h1>
+                        <!--<hr class="small">-->
+                        <span id="subdusi" class="subheading">Jumping to the page...</span>
                     </div>
                 
 
@@ -258,237 +243,41 @@
 
 
     <!-- Main Content -->
-    <!-- Post Content -->
-<article>
+    
+<!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/header_img/404-bg.jpg')">
     <div class="container">
         <div class="row">
-
-            <!-- Post Container -->
-            <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                post-container">
-
-                <p><img src="/2018/12/12/Py181212-Numpy%E5%85%A5%E9%97%A8/181212-1.jpg" alt="The First Title Picture"></p>
-<a id="more"></a>
-<p><strong>本文将以代码的形式快速介绍Numpy的基本用法</strong></p>
-<h3 id="本文主要内容："><a href="#本文主要内容：" class="headerlink" title="本文主要内容："></a><font color="#1E90FF"><center>本文主要内容：</center></font></h3><hr>
-<ul>
-<li>创建array</li>
-<li>Numpy基本运算</li>
-<li>Numpy索引</li>
-<li>array的合并</li>
-<li>array的分割</li>
-<li>copy和deepcopy</li>
-</ul>
-<h2 id="Talk-is-cheap-Show-me-the-code"><a href="#Talk-is-cheap-Show-me-the-code" class="headerlink" title=" Talk is cheap. Show me the code"></a><font color="#1E90FF"><center> Talk is cheap. Show me the code</center></font></h2><p><img src="/2018/12/12/Py181212-Numpy%E5%85%A5%E9%97%A8/181212-2.png" alt="The First Title Picture" title="Numpy"></p>
-
-                
-                <hr>
-                <!-- Pager -->
-                <!-- Here is the place to change the preview?????no  -->
-                <ul class="pager">
-
-                    
-                    <li class="previous">
-                        <a href="/2019/01/01/Blog190101-Life-Goals/" data-toggle="tooltip" data-placement="top" title="很喜欢的一句话">&larr; Previous Post</a>
-                    </li>
-                    
-
-                    
-                    <li class="next">
-                        <a href="/2018/10/10/Hexo181010-为你的GitHub博客设置专属域名/" data-toggle="tooltip" data-placement="top" title="为你的GitHub博客设置专属域名">Next Post &rarr;</a>
-                    </li>
-                    
-
-                </ul>
-
-                <!-- tip start -->
-                
-
-                
-                <!-- tip end -->
-
-                <!-- Music start-->
-                
-                
-
-<link rel="stylesheet" href="/css/music-player/fonts/iconfont.css">
-
-
-<link rel="stylesheet" href="/css/music-player/css/reset.css">
-
-
-<link rel="stylesheet" href="/css/music-player/css/player.css">
-
-
-
-<div class="music-player">
-    <audio class="music-player__audio" ></audio>
-    <div class="music-player__main">
-        <div class="music-player__blur"></div>
-        <div class="music-player__disc">
-            <div class="music-player__image">
-                <img width="100%" src="" alt="">
-            </div>
-            <div class="music-player__pointer"><img width="100%" src="/img/cd_tou.png" alt=""></div>
-        </div>
-        <div class="music-player__controls">
-            <div class="music__info">
-                <h3 class="music__info--title">...</h3>
-                <p class="music__info--singer">...</p>
-            </div>
-            <div class="player-control">
-                <div class="player-control__content">
-                    <div class="player-control__btns">
-                        <div class="player-control__btn player-control__btn--prev"><i class="iconfont icon-prev"></i></div>
-                        <div class="player-control__btn player-control__btn--play"><i class="iconfont icon-play"></i></div>
-                        <div class="player-control__btn player-control__btn--next"><i class="iconfont icon-next"></i></div>
-                        <div class="player-control__btn player-control__btn--mode"><i class="iconfont icon-loop"></i></div>
-                    </div>
-                    <div class="player-control__volume">
-                        <div class="control__volume--icon player-control__btn"><i class="iconfont icon-volume"></i></div>
-                        <div class="control__volume--progress player_progress"></div>
-                    </div>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1 class="vertical-center">页面跳转中...</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">Jumping to the page...</span>
                 </div>
-                <div class="player-control__content">
-                    <div class="player__song--progress player_progress"></div>
-                    <div class="player__song--timeProgess nowTime">00:00</div>
-                    <div class="player__song--timeProgess totalTime">00:00</div>
-                </div>
-
-            </div>
-
-        </div>
-    </div>
-</div>
-
-
-<script src="/js/music-player/utill.js"></script>
-
-
-<script src="/js/music-player/jquery.min.js"></script>
-
-
-<script src="/js/music-player/player.js"></script>
-
-
-                
-                <!-- Music end -->
-
-                <!-- Sharing -->
-                
-                <!-- Sharing -->
-
-                <!-- gitment start -->
-                
-                <!-- gitment end -->
-
-                <!-- 来必力City版安装代码 -->
-                
-                <!-- City版安装代码已完成 -->
-
-                <!-- disqus comment start -->
-                
-                <!-- disqus comment end -->
-            </div>
-            
-            <!-- Tabe of Content -->
-            <!-- Table of Contents -->
-
-    
-      <aside id="sidebar">
-        <div id="toc" class="toc-article">
-        <strong class="toc-title">Contents</strong>
-        
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#本文主要内容："><span class="toc-nav-text">本文主要内容：</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Talk-is-cheap-Show-me-the-code"><span class="toc-nav-text"> Talk is cheap. Show me the code</span></a>
-        
-        </div>
-      </aside>
-    
-
-                
-            <!-- Sidebar Container -->
-            <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                sidebar-container">
-
-                <!-- Featured Tags -->
-                
-                <section>
-                    <!-- no hr -->
-                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
-                    <div class="tags">
-                       
-                          <a class="tag" href="/tags/#Python3" title="Python3">Python3</a>
-                        
-                          <a class="tag" href="/tags/#Python2" title="Python2">Python2</a>
-                        
-                          <a class="tag" href="/tags/#Numpy" title="Numpy">Numpy</a>
-                        
-                    </div>
-                </section>
-                
-
-                <!-- Friends Blog -->
-                
-                <hr>
-                <h5>LINKS</h5>
-                <ul class="list-inline">
-
-                    
-                        <li><a href="#" target="_blank">Zhihao&#39;s Blog</a></li>
-                    
-                        <li><a href="#" target="_blank">HomePage</a></li>
-                    
-                        <li><a href="#" target="_blank">Other</a></li>
-                    
-                </ul>
-                
             </div>
         </div>
     </div>
-</article>
+</header>
 
-
-
-
-<!-- async load function -->
-<script>
-    function async(u, c) {
-      var d = document, t = 'script',
-          o = d.createElement(t),
-          s = d.getElementsByTagName(t)[0];
-      o.src = u;
-      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
-      s.parentNode.insertBefore(o, s);
-    }
-</script>
-<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
-<script>
-    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
-        anchors.options = {
-          visible: 'hover',
-          placement: 'left',
-          icon: 'ℬ'
-        };
-        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
-    })
-</script>
-
-
-<style  type="text/css">
-    /* place left on bigger screen */
-    @media all and (min-width: 800px) {
-        .anchorjs-link{
-            position: absolute;
-            left: -0.75em;
-            font-size: 1.1em;
-            margin-top : -0.1em;
-        }
+<style>
+    .vertical-center {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 50vh;
+        margin-bottom: -10rem; /* Adjust the margin as needed */
     }
 </style>
+
+<script>
+    document.body.classList.add('page-fullscreen');
+
+    // Add the timer for automatic redirection after 3 seconds
+    setTimeout(function() {
+        window.location.href = 'https://blog.csdn.net/ningmoon';
+    }, 3000); // 3000 milliseconds = 3 seconds
+</script>
 
 
 
