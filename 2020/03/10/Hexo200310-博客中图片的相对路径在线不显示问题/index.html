@@ -526,8 +526,8 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    &copy; 2017-2023 YaoZhihao
-                    <!-- 原代码 Copyright &copy; Zhihao 2023 -->
+                    &copy; 2017-2024 YaoZhihao
+                    <!-- 原代码 Copyright &copy; Zhihao 2024 -->
                     <br>
                     Theme by Snail <i class="fa fa-heart" aria-hidden="true"></i> Ported by <a href="https://yaozhihao.com" target="_blank" rel="noopener"> YaoZhihao </a>
                     <!-- Powered by Hexo | Theme by <a href="https://yaozhihao.com" target="_blank" rel="noopener"> Nail </a> -->
@@ -664,6 +664,22 @@
     
         <script src="/js/ribbonDynamic.js"></script>
     
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
 </body>
 
 </html>
