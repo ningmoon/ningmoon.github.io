@@ -2,13 +2,13 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
     <url>
-        <loc>http://ningmoon.github.io</loc>
+        <loc>https://www.yaozhihao.com</loc>
         <changefreq>daily</changefreq>
         <priority>1</priority>
     </url>
 
     <url>
-        <loc>http://ningmoon.github.io/2018/04/18/Hexo180418-%E7%94%A8Hexo-Github-Pages%E6%90%AD%E5%BB%BA%E4%BD%A0%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</loc>
+        <loc>https://www.yaozhihao.com/2018/04/18/Hexo180418-%E7%94%A8Hexo-Github-Pages%E6%90%AD%E5%BB%BA%E4%BD%A0%E7%9A%84%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</loc>
         <lastmod>2024-02-18T03:56:10.959Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>

@@ -2,27 +2,41 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
     <url>
-        <loc>http://ningmoon.github.io</loc>
+        <loc>https://www.yaozhihao.com</loc>
         <changefreq>daily</changefreq>
         <priority>1</priority>
     </url>
     
     <url>
-        <loc>http://ningmoon.github.io/resume/</loc>
-        <lastmod>2024-02-19T08:30:01.290Z</lastmod>
+        <loc>https://www.yaozhihao.com/categories/</loc>
+        <lastmod>2026-05-16T01:11:19.628Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     
     <url>
-        <loc>http://ningmoon.github.io/csdn/</loc>
+        <loc>https://www.yaozhihao.com/tags/</loc>
+        <lastmod>2026-05-16T01:11:19.504Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://www.yaozhihao.com/resume/</loc>
+        <lastmod>2024-02-20T06:38:58.707Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>https://www.yaozhihao.com/csdn/</loc>
         <lastmod>2023-08-11T05:58:31.627Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     
     <url>
-        <loc>http://ningmoon.github.io/404.html</loc>
+        <loc>https://www.yaozhihao.com/404.html</loc>
         <lastmod>2020-03-08T01:18:45.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
